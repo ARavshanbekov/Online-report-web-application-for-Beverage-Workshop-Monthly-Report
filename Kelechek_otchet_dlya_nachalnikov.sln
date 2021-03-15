@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kelechek_otchet_dlya_nachalnikov", "Kelechek_otchet_dlya_nachalnikov\Kelechek_otchet_dlya_nachalnikov.csproj", "{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Debug|x64.ActiveCfg = Debug|x64
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Debug|x64.Build.0 = Debug|x64
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Release|x64.ActiveCfg = Release|x64
+		{37DCE574-53AD-4F4A-9CDE-97FEBB2FB14E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F540ADF-7E80-4575-A521-346E2460841C}
+	EndGlobalSection
+EndGlobal
