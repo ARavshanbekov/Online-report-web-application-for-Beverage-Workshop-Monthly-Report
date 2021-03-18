@@ -1,31 +1,22 @@
 ﻿// in src/termoplastIVyduv.js
-import * as React from "react";
+import React, { useState } from "react";
+
 import _uniqueId from 'lodash/uniqueId';
-import Picker from 'react-month-picker'
+import "react-datepicker/dist/react-datepicker.css";
+import TextField from '@material-ui/core/TextField';
 
 import {
     List,
-    Datagrid,
-    TextField,
-    ReferenceField,
+    Datagrid,    
     EditButton,
     Edit,
     SimpleForm,
-    ReferenceInput,
-    SelectInput,
     TextInput,
     Create,
     DateInput,
-    ShowButton,
-    CardActions,
-    ListButton,
-    DeleteButton,
-    RefreshButton,
-    SaveButton,
-    useRefresh
 } from 'react-admin';
 import axios from 'axios';
-import { Table, Row, Col, Container, Input, Form, Label, Button } from 'reactstrap';
+import { Table, Row, Col, Container, Input, Form, Label, Button, DateTime } from 'reactstrap';
 
 export const TermoplastList = props => (
     <List {...props}>
@@ -87,40 +78,28 @@ export class Info extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            thead: [],
-            tbody: [],
+            thead: [],            
             balanceOperationNumbers: [],
             balanceAtTheEndIndex: 0,
             report: [],
             reportColumns: [],
             reportItems: [],
             monthlyBalance: [],
-            apiReturnStatus: false,
-            calendarsingleValue: { year: (new Date().getFullYear()), month: (new Date().getFullYear())} 
+            isApiReturnedData: false,
+            apiStatus: "Загрузка",
+            currentMonth: ((new Date).getMonth() + 1)
+            
         };
-
-        this.pickAMonth = React.createRef()
 
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleResultValueChange = this.handleResultValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDate = this.handleDate.bind(this);
 
     }
 
     fillTableHead() {
-        let report = this.state.report;
-        let reportColumns = this.state.reportColumns;
-        let reportItems = this.state.reportItems;
-        let monthlyBalance = this.state.monthlyBalance;
-        //console.log(JSON.stringify(data[0].name));
-        let childrenTH = []
-        //create table heads
-        for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-            let as = reportColumns[j].name;
-            childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-        }
-
-        return <tr>{childrenTH}</tr>;
+       
     }
 
     fillTableBody() {
@@ -133,10 +112,10 @@ export class Info extends React.Component {
         console.table(this.state.balanceOperationNumbers);
         //console.log
         for (let i = 0; i < Object.keys(reportItems).length; i++) {
-            let childrenTB = []            
+            let childrenTB = []
 
             let balanceAtTheBeginning = monthlyBalance[i].residualBalance;
-            
+
             childrenTB.push(<td key={_uniqueId()} id={i}>{reportItems[i].name}</td>);
             childrenTB.push(<td key={_uniqueId()} id={i}>{reportItems[i].unit}</td>);
             childrenTB.push(<td key={_uniqueId()} id={i}>{balanceAtTheBeginning}</td>);
@@ -146,19 +125,17 @@ export class Info extends React.Component {
                 childrenTB.push(<td> <MyInputField id={i} rowID={i} columnID={j} onValueChange={this.handleValueChange} /></td>);
             }
 
-            
-            
             let sum = 0;
             for (let j = 2; j < this.state.balanceAtTheEndIndex; j++) {
                 sum += this.state.balanceOperationNumbers[i][j];
             }
 
             this.state.balanceOperationNumbers[i][this.state.balanceAtTheEndIndex] = sum;
-            
+
             childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[i][this.state.balanceAtTheEndIndex]} onResultValueChange={this.handleResultValueChange} /></td>);
 
             tbody.push(<tr>{childrenTB}</tr>)
-        }
+        }        
 
         return tbody;
     }
@@ -185,32 +162,18 @@ export class Info extends React.Component {
         this.setState({
             balanceOperationNumbers: tempArray
         })
-        console.table(this.state.balanceOperationNumbers);
-
-        let tbody = this.state.tbody;
-        this.setState({
-            tbody: tbody
-        })
+        console.table(this.state.balanceOperationNumbers);        
     }
 
     handleResultValueChange(target) {
-        let targetValue = target.value;
-        let tbody = this.state.tbody;
+        let targetValue = target.value;        
         let tempArray = this.state.balanceOperationNumbers;
         tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
         this.setState({
             balanceOperationNumbers: tempArray
         })
 
-
-        this.setState({
-            tbody: tbody
-        })
         console.log("handleResultValueChange triggered");
-    }
-
-    handleChange(event) {
-        this.setState({ value: event.target.value });
     }
 
     handleSubmit(event) {
@@ -219,6 +182,7 @@ export class Info extends React.Component {
         let request = {
             MemberID: parseInt(userId),
             Name: "Термопласт и Выдув"
+
         }
 
         axios
@@ -249,63 +213,175 @@ export class Info extends React.Component {
             });
     }
 
-    componentDidMount() {
+    handleDate(event) {
+
+        let currentMonth = event.target.value;
+        console.log(currentMonth);
+        const searchTerm = '-';
+        currentMonth = parseInt(currentMonth.substring(currentMonth.indexOf(searchTerm) + 1));
+        
+
+        console.log(currentMonth);
+        
+        this.setState({
+            currentMonth: currentMonth
+        });
+        
+
+        
         let userId = localStorage.getItem('id');
         let request = {
             MemberID: parseInt(userId),
-            Name: "Термопласт и Выдув"
-        }
-        console.log('userID: ' + request)
+            Name: "Термопласт и Выдув",
+            Month: currentMonth
+        };
+        console.log(' before request change: ' + request)
+
         console.log('MemberID: ' + request.MemberID)
         console.log('Name: ' + request.Name)
+        //console.log(' after request change: ' + request)
         axios
             .post("https://localhost:44368/api/DetailedReports/", request)
             .then(response => {
                 var data = JSON.parse(JSON.stringify(response.data));
                 console.log(data);
 
-                this.setState({
-                    report: data.report,
-                    reportColumns: data.reportColumns,
-                    reportItems: data.reportItems,
-                    monthlyBalance: data.monthlyBalance
-                })
+                if (data.monthlyBalance.length > 0) {
+                    this.setState({
+                        report: data.report,
+                        reportColumns: data.reportColumns,
+                        reportItems: data.reportItems,
+                        monthlyBalance: data.monthlyBalance
+                    })
 
-                let report = data.report;
-                let reportColumns = data.reportColumns;
-                let reportItems = data.reportItems;
-                let monthlyBalance = data.monthlyBalance;
-                //console.log(JSON.stringify(data[0].name));
-                let childrenTH = []
-                //create table heads
-                for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                    let as = reportColumns[j].name;
-                    childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                }
-
-                this.state.thead.push(<tr> {childrenTH}</tr>);
-
-                let totalColumnNumber = Object.keys(reportColumns).length;
-                for (let i = 0; i < Object.keys(reportItems).length; i++) {
-
-                    //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
-                    this.state.balanceOperationNumbers.push([totalColumnNumber])
-
-                    for (let j = 0; j < Object.keys(data.reportColumns).length; j++) {
-                        this.state.balanceOperationNumbers[i][j] = 0;
+                    let report = data.report;
+                    let reportColumns = data.reportColumns;
+                    let reportItems = data.reportItems;
+                    let monthlyBalance = data.monthlyBalance;
+                    //console.log(JSON.stringify(data[0].name));
+                    let childrenTH = []
+                    //create table heads
+                    for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                        let as = reportColumns[j].name;
+                        childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
                     }
-                }
 
-                this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                this.setState({ apiReturnStatus: true });
-                console.log("Object.keys(data.reportColumns).length - 1: " + Object.keys(reportColumns).length);
-                console.log("balanceAtTheEndIndex: " + this.state.balanceAtTheEndIndex);
-                console.log("balanceAtTheEndIndex:");
+                    this.state.thead.push(<tr> {childrenTH}</tr>);
+
+                    let totalColumnNumber = Object.keys(reportColumns).length;
+                    for (let i = 0; i < Object.keys(reportItems).length; i++) {
+
+                        //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
+                        this.state.balanceOperationNumbers.push([totalColumnNumber])
+
+                        for (let j = 0; j < Object.keys(data.reportColumns).length; j++) {
+                            this.state.balanceOperationNumbers[i][j] = 0;
+                        }
+                    }
+
+                    let isApiReturnedData = true;
+                    this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
+                    this.setState({ isApiReturnedData: isApiReturnedData });
+                    console.log("Object.keys(data.reportColumns).length - 1: " + Object.keys(reportColumns).length);
+                    console.log("balanceAtTheEndIndex: " + this.state.balanceAtTheEndIndex);    
+                }
             })
-            .catch(function (error) {
+            .catch((error) => {
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
+
+                    this.setState({
+                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        reportItems: [],
+                        reportColumns: [],
+                        thead: [],
+                        isApiReturnedData: false
+                    });
+
+                } else if (error.request) {
+                    console.log("Error request: " + error.request);
+                    //do something else
+
+                } else if (error.message) {
+                    console.log("Error message: " + error.message);
+                    //do something other than the other two
+
+                }
+
+            });
+    }
+
+    componentDidMount() {
+        let userId = localStorage.getItem('id');
+        let request = {
+            MemberID: parseInt(userId),
+            Name: "Термопласт и Выдув",
+            Month: this.state.currentMonth
+        };
+        console.log(' before request change: ' + request)
+        
+        console.log('Month: ' + request.Month)
+        console.log('Name: ' + request.Name)        
+        //console.log(' after request change: ' + request)
+        axios
+            .post("https://localhost:44368/api/DetailedReports/", request)
+            .then(response => {
+                var data = JSON.parse(JSON.stringify(response.data));
+                console.log(data);
+
+                if (data.monthlyBalance.length > 0) {
+                    this.setState({
+                        report: data.report,
+                        reportColumns: data.reportColumns,
+                        reportItems: data.reportItems,
+                        monthlyBalance: data.monthlyBalance
+                    })
+
+                    let report = data.report;
+                    let reportColumns = data.reportColumns;
+                    let reportItems = data.reportItems;
+                    let monthlyBalance = data.monthlyBalance;
+                    //console.log(JSON.stringify(data[0].name));
+                    let childrenTH = []
+                    //create table heads
+                    for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                        let as = reportColumns[j].name;
+                        childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+                    }
+
+                    this.state.thead.push(<tr> {childrenTH}</tr>);
+
+                    let totalColumnNumber = Object.keys(reportColumns).length;
+                    for (let i = 0; i < Object.keys(reportItems).length; i++) {
+
+                        //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
+                        this.state.balanceOperationNumbers.push([totalColumnNumber])
+
+                        for (let j = 0; j < Object.keys(data.reportColumns).length; j++) {
+                            this.state.balanceOperationNumbers[i][j] = 0;
+                        }
+                    }
+
+                    let isApiReturnedData = true;
+                    this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
+                    this.setState({ isApiReturnedData: isApiReturnedData });
+                    console.log("Object.keys(data.reportColumns).length - 1: " + Object.keys(reportColumns).length);
+                    console.log("balanceAtTheEndIndex: " + this.state.balanceAtTheEndIndex);    
+                }            
+            })
+            .catch((error) => {
+                if (error.response) {
+                    console.log("Error response: " + error.response);
+                    //do something
+                    
+                    this.setState({
+                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        reportItems: [],
+                        reportColumns: [],
+                        thead: [],
+                        isApiReturnedData: false
+                    });
 
                 } else if (error.request) {
                     console.log("Error request: " + error.request);
@@ -321,20 +397,56 @@ export class Info extends React.Component {
     }
 
     render() {
-        if (!this.state.apiReturnStatus) {
-            return <span>Loading...</span>;
-        }
+        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']    
 
-        const pickerLang = {
-            months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-            from: 'Из', to: 'К',
-        }
+        if (!this.state.isApiReturnedData) {
+            return (
+             <Row>
+                <Container>
+                    <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
+                </Container>
+                <Container>
+                    <TextField
+                        id="month"
+                        label="Выберите месяц"
+                        type="month"
+                        defaultValue={(new Date).getMonth()}
+                        onBlur={this.handleDate}
+                        onChange={this.handleDate}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
 
-        const { singleValue } = this.state
+                </Container>
+                <Container>
+                    <span>{this.state.apiStatus}</span>
+                </Container>
+            </Row>);
+            
+        }                
+
         return (
             <Container className="themed-container" fluid={true}>                
                 <Row>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Container>
+                        <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
+                    </Container>
+                    <Container>
+                        <TextField
+                            id="month"
+                            label="Выберите месяц"
+                            type="month"
+                            defaultValue={(new Date).getMonth()}
+                            onBlur={this.handleDate}
+                            onChange={this.handleDate}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />                       
+                     
+                    </Container>
+                    <Form onSubmit={this.handleSubmit}>                          
                         <Col md={12} className="p-0 m-0">
                             <Table striped bordered hover size="md" >
                                 <thead>
@@ -348,7 +460,7 @@ export class Info extends React.Component {
                                 <span aria-hidden>&#10003; Сохранить</span>
                             </Button>
                         </Col>
-                    </Form >
+                    </Form >                    
                 </Row>
             </Container>
         )
@@ -392,4 +504,3 @@ export const TermoplastEdit = props => (
         </SimpleForm>
     </Edit>
 );
-

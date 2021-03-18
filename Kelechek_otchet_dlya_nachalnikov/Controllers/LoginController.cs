@@ -13,19 +13,19 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MembersController : ControllerBase
+    public class LoginController : ControllerBase
     {
         private readonly Kelechek_otchet_dlya_nachalnikovContext _context;
 
-        public MembersController(Kelechek_otchet_dlya_nachalnikovContext context)
+        public LoginController(Kelechek_otchet_dlya_nachalnikovContext context)
         {
             _context = context;
         }
 
-        // GET: api/Members
+        // GET: api/Login
         [HttpGet]
         public async Task<ActionResult<string>> GetMember()
-        {            
+        {
             var members = await _context.Member.ToListAsync();
             int membersCount = members.Count();
             var data = JsonConvert.SerializeObject(members);
@@ -33,7 +33,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return data;
         }
 
-        // GET: api/Members/5
+        // GET: api/Login/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Member>> GetMember(int id)
         {
@@ -47,7 +47,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return member;
         }
 
-        // PUT: api/Members/5
+        // PUT: api/Login/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
@@ -79,19 +79,22 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return NoContent();
         }
 
-        // POST: api/Members
+        // POST: api/Login
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Member>> PostMember(Member member)
+        public async Task<ActionResult<Member>> PostMember(Member request)
         {
-            _context.Member.Add(member);
-            await _context.SaveChangesAsync();
+            var member = await _context.Member.Where(m => m.username.Equals(request.username) && m.password.Equals(request.password)).FirstOrDefaultAsync();
+            if (member == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction("GetReport", new { id = member.id }, member);
+            return Ok(member);
         }
 
-        // DELETE: api/Members/5
+        // DELETE: api/Login/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Member>> DeleteMember(int id)
         {

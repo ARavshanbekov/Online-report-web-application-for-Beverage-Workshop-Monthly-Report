@@ -9,6 +9,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
     {
         public int id { get; set; }
         public int memberID { get; set; }
+        public int responsibleAreaID { get; set; }
         public int reportID { get; set; }
         public double initialBalance { get; set; }
         public double residualBalance { get; set; }

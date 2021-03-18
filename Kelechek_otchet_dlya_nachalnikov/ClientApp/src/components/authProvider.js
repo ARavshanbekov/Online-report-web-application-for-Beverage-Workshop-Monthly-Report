@@ -5,7 +5,7 @@ import decodeJwt from 'jwt-decode';
 export default {
     // called when the user attempts to log in
     login: ({ username, password }) => {
-        const request = new Request('/api/members/', {
+        const request = new Request('/api/login/', {
             method: 'POST',
             body: JSON.stringify({ username, password }),
             headers: new Headers({ 'Content-Type': 'application/json' }),

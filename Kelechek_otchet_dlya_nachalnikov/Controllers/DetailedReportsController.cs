@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Kelechek_otchet_dlya_nachalnikov.Data;
 using Kelechek_otchet_dlya_nachalnikov.Models;
 using Kelechek_otchet_dlya_nachalnikov.Tools;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
+using Newtonsoft.Json;
+using Nancy.Json;
 
 namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 {
@@ -42,16 +46,16 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             }
 
             var report = await _context.Report.Where(r => r.MemberID == id && r.ResponsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
-            
+
             if (report == null)
             {
                 return NotFound();
             }
 
-            
+
             var reportColumns = await _context.ReportColumn.Where(r => r.ReportID == report.id).ToListAsync();
             var reportItems = await _context.ReportItem.Where(r => r.ReportID == report.id).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.memberID == id && r.reportID == report.id).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.memberID == id).FirstOrDefaultAsync();
 
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
@@ -100,26 +104,38 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Object>> PostReport(ResponsibleArea request)
+        public async Task<ActionResult<Object>> PostReport(Object request)
         {
-            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.MemberID == request.MemberID && r.Name.Equals(request.Name)).FirstOrDefaultAsync();
+
+            
+            JObject requestObject = (JObject)JsonConvert.DeserializeObject(request.ToString());
+
+            int memberID = (int)requestObject["MemberID"];
+            string name = (string)requestObject["Name"];   
+            int month = (int)requestObject["Month"];
+
+            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.MemberID == memberID && r.Name.Equals(name)).FirstOrDefaultAsync();
 
             if (responsibleArea == null)
             {
                 return NotFound();
             }
 
-            var report = await _context.Report.Where(r => r.MemberID == request.MemberID && r.ResponsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Report.Where(r => r.MemberID == memberID && r.ResponsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
 
             if (report == null)
             {
                 return NotFound();
             }
-
-
+            
             var reportColumns = await _context.ReportColumn.Where(r => r.ReportID == report.id).ToListAsync();
             var reportItems = await _context.ReportItem.Where(r => r.ReportID == report.id).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.memberID == request.MemberID && r.reportID == report.id).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
+            //  
+            if (monthlyBalance == null || !monthlyBalance.Any())
+            {
+                return NotFound();
+            }
 
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new

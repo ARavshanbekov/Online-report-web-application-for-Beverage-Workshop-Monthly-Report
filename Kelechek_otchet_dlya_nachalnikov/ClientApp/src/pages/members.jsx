@@ -1,13 +1,13 @@
 ﻿// in src/members.js
 import * as React from "react";
-import { List, Datagrid, TextField, EmailField } from 'react-admin';
+import { List, Datagrid, TextField, EmailField, Edit, Create, SimpleForm, TextInput } from 'react-admin';
 
 export const MemberList = props => (
     <List {...props}>
         <Datagrid rowClick="edit">
             <TextField source="id" />
-            <TextField source="name" />
-            <TextField source="surname" />
+            <TextField source="firstName" />
+            <TextField source="lastName" />
             <TextField source="phoneNumber" />
             <TextField source="username" />
             <TextField source="password" />            
@@ -15,4 +15,26 @@ export const MemberList = props => (
     </List>
 );
 
-export default MemberList;
+export const MemberEdit = props => (
+    <Edit {...props}>
+        <SimpleForm>           
+            <TextInput source="firstName" />
+            <TextInput source="lastName" />
+            <TextInput source="phoneNumber" />
+            <TextInput source="username" />
+            <TextInput source="password" />        
+        </SimpleForm>
+    </Edit>
+);
+
+export const MemberCreate = props => (
+    <Create {...props} >
+        <SimpleForm>            
+            <TextInput source="firstName" />
+            <TextInput source="lastName" />
+            <TextInput source="phoneNumber" />
+            <TextInput source="username" />
+            <TextInput source="password" />        
+        </SimpleForm >
+    </Create >
+);

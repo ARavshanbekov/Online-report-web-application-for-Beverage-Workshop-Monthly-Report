@@ -1,7 +1,7 @@
 ﻿import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
 
-const apiUrl = 'https://localhost:44368/api';
+const apiUrl = '/api';
 const httpClient = fetchUtils.fetchJson;
 const countHeader = 'Content-Range';
 
