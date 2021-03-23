@@ -36,26 +36,27 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         // GET: api/DetailedReports/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Object>> GetReport(int id, string responsibleAreaName)
+        public async Task<ActionResult<Object>> GetReport(int id)
         {
-            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.MemberID == id && r.Name.Equals(responsibleAreaName)).FirstOrDefaultAsync();
 
-            if (responsibleArea == null)
-            {
-                return NotFound();
-            }
-
-            var report = await _context.Report.Where(r => r.MemberID == id && r.ResponsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Report.FindAsync(id);
 
             if (report == null)
             {
                 return NotFound();
             }
 
+            var reportMonth = report.date.Month;
+            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == reportMonth && r.memberID == report.memberID && r.responsibleAreaID == report.responsibleAreaID).ToListAsync();
+            //  
+            if (monthlyBalance == null || !monthlyBalance.Any())
+            {
+                return NotFound();
+            }
 
-            var reportColumns = await _context.ReportColumn.Where(r => r.ReportID == report.id).ToListAsync();
-            var reportItems = await _context.ReportItem.Where(r => r.ReportID == report.id).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.memberID == id).FirstOrDefaultAsync();
+            var reportData = await _context.ReportData.Where(r => r.id == report.id).ToListAsync();
 
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
@@ -63,9 +64,10 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 report = report,
                 reportColumns = reportColumns,
                 reportItems = reportItems,
-                monthlyBalance = monthlyBalance
+                monthlyBalance = monthlyBalance,
+                reportData = reportData
             };
-            return dynamicObject;
+            return Ok(dynamicObject);
         }
 
         // PUT: api/DetailedReports/5
@@ -114,22 +116,22 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             string name = (string)requestObject["Name"];   
             int month = (int)requestObject["Month"];
 
-            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.MemberID == memberID && r.Name.Equals(name)).FirstOrDefaultAsync();
+            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.memberId == memberID && r.name.Equals(name)).FirstOrDefaultAsync();
 
             if (responsibleArea == null)
             {
                 return NotFound();
             }
 
-            var report = await _context.Report.Where(r => r.MemberID == memberID && r.ResponsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Report.Where(r => r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
 
             if (report == null)
             {
                 return NotFound();
             }
             
-            var reportColumns = await _context.ReportColumn.Where(r => r.ReportID == report.id).ToListAsync();
-            var reportItems = await _context.ReportItem.Where(r => r.ReportID == report.id).ToListAsync();
+            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
             var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())

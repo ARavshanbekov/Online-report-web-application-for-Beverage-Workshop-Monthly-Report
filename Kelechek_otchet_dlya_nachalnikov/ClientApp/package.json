@@ -11,6 +11,8 @@
     "lodash.uniqueid": "^4.0.1",
     "merge": "^1.2.1",
     "oidc-client": "^1.9.0",
+    "qs": "^6.10.1",
+    "query-string": "^7.0.0",
     "ra-data-json-server": "^3.12.5",
     "ra-language-russian": "^3.3.0",
     "react": "^16.0.0",

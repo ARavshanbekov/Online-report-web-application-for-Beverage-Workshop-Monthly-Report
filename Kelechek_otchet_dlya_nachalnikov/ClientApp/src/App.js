@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Admin, Resource, usePermissions } from 'react-admin';
 import { MemberList, MemberCreate, MemberEdit } from './pages/members';
-import { ReportCreate, ReportEdit, ReportList } from './pages/reports';
+import { ReportList } from './pages/reports';
 import { TermoplastList, TermoplastCreate, TermoplastEdit } from './pages/termoplastIVyduv';
 import { TsehRozlivaList, TsehRozlivaCreate, TsehRozlivaEdit } from './pages/tsehRozliva';
 import dataProvider from './components/dataProvider';
@@ -21,19 +21,20 @@ const App = () => {
     return (
         <Admin i18nProvider={i18nProvider} dashboard={Dashboard} dataProvider={dataProvider} authProvider={authProvider} >
             {permissions => [
-                //permissions === 'admin'
-                //    ? <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} />
-                //    : null,
+                permissions === 'admin'
+                    ? <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} create={MemberCreate} edit={MemberEdit} />
+                    : null,
+                permissions === 'admin'
+                    ? <Resource name="reports" options={{ label: "Отчеты" }} list={ReportList} />
+                    : null,
                 permissions === 'завсклад'
                     ? <Resource name="termoplastIVyduv" options={{ label: "Термопласт и выдув" }} list={TermoplastList} create={TermoplastCreate} edit={TermoplastEdit} />
                     : null,
                 permissions === 'нач. цех №2'
                     ? <Resource name="tsehRozliva" options={{ label: "Цех розлива №2" }} list={TsehRozlivaList} create={TsehRozlivaCreate} edit={TsehRozlivaEdit} />
-                    : null
-
+                    : null                
             ]}
-            <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} create={MemberCreate} edit={MemberEdit} />
-            <Resource name="reports" options={{ label: "Отчеты" }} list={MemberList} create={ReportCreate} edit={ReportEdit} />
+            
         </Admin >
     )
 }

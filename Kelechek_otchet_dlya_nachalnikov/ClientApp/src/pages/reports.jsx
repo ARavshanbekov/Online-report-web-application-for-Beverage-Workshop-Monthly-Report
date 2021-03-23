@@ -1,15 +1,16 @@
 ﻿// in src/reports.js
 import * as React from "react";
-import { List, Datagrid, TextField, EmailField, Create, Edit, SimpleForm, TextInput } from 'react-admin';
+import { List, Datagrid, TextField, EmailField, Create, Edit, SimpleForm, TextInput, DateField, DateInput, EditButton } from 'react-admin';
 
 export const ReportList = props => (
     <List {...props}>
-        <Datagrid rowClick="edit">
+        <Datagrid>
             <TextField source="id" />
             <TextField source="ResponsibleAreaID" />
-            <TextField source="Date" />
+            <DateField source="Date" />
             <TextField source="Title" />
             <TextField source="MemberID" />
+            <EditButton />
         </Datagrid>
     </List>
 );
@@ -18,11 +19,11 @@ export const ReportList = props => (
 export const ReportEdit = props => (
     <Edit {...props}>
         <SimpleForm>
-            <TextField source="id" />
-            <TextField source="ResponsibleAreaID" />
-            <TextField source="Date" />
-            <TextField source="Title" />
-            <TextField source="MemberID" />
+            <TextInput source="id" />
+            <TextInput source="ResponsibleAreaID" />
+            <DateInput source="Date" />
+            <TextInput source="Title" />
+            <TextInput source="MemberID" />
         </SimpleForm>
     </Edit>
 );
@@ -30,11 +31,11 @@ export const ReportEdit = props => (
 export const ReportCreate = props => (
     <Create {...props} >
         <SimpleForm>
-            <TextField source="id" />
-            <TextField source="ResponsibleAreaID" />
-            <TextField source="Date" />
-            <TextField source="Title" />
-            <TextField source="MemberID" />
+            <TextInput source="id" />
+            <TextInput source="ResponsibleAreaID" />
+            <DateInput source="Date" />
+            <TextInput source="Title" />
+            <TextInput source="MemberID" />
         </SimpleForm >
     </Create >
 );

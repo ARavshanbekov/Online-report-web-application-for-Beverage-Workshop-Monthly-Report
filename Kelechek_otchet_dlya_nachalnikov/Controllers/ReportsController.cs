@@ -29,7 +29,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             var reports = await _context.Report.ToListAsync();
             int reportsCount = reports.Count();
             var output = JsonConvert.SerializeObject(reports);
-            Response.Headers.Add("Content-Range", reports.ToString());
+            Response.Headers.Add("Content-Range", reportsCount.ToString());
             return output;
         }
 

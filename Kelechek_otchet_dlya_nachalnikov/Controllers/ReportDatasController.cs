@@ -78,12 +78,12 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<ReportData>> PostReportData(ReportData reportData)
+        public async Task<ActionResult> PostReportData(List<ReportData> reportData)
         {
-            _context.ReportData.Add(reportData);
+            _context.ReportData.AddRange(reportData);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReportData", new { id = reportData.id }, reportData);
+            return StatusCode(201);
         }
 
         // DELETE: api/ReportDatas/5

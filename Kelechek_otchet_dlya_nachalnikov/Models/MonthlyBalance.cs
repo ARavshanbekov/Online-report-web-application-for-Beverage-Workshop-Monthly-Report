@@ -15,5 +15,6 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public double residualBalance { get; set; }
         public int order { get; set; }
         public DateTime date { get; set; }
+        public int reportItemID { get; set; }
     }
 }

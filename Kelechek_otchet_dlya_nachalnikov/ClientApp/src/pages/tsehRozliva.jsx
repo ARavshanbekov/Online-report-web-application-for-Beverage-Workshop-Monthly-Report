@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import _uniqueId from 'lodash/uniqueId';
 import "react-datepicker/dist/react-datepicker.css";
-import TextField from '@material-ui/core/TextField';
 
 import {
     List,
@@ -14,17 +13,16 @@ import {
     TextInput,
     Create,
     DateInput,
+    TextField
 } from 'react-admin';
 import axios from 'axios';
 import { Table, Row, Col, Container, Input, Form, Label, Button, DateTime } from 'reactstrap';
 
 export const TsehRozlivaList = props => (
     <List {...props}>
-        <Datagrid>
-            <TextField source="id" />
-            <TextField source="ResponsibleAreaID" />
-            <TextField source="Date" label="Дата" />
-            <TextField source="Title" label="Заглавие" />
+        <Datagrid>           
+            <TextField source="date" label="Дата" />
+            <TextField source="title" label="Заглавие" />
             <EditButton />
         </Datagrid>
     </List>
@@ -404,7 +402,7 @@ export class Info extends React.Component {
                         <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
                     </Container>
                     <Container>
-                        <TextField
+                        <input
                             id="month"
                             label="Выберите месяц"
                             type="month"

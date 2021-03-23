@@ -4,14 +4,16 @@ using Kelechek_otchet_dlya_nachalnikov.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kelechek_otchet_dlya_nachalnikov.Migrations
 {
     [DbContext(typeof(Kelechek_otchet_dlya_nachalnikovContext))]
-    partial class Kelechek_otchet_dlya_nachalnikovContextModelSnapshot : ModelSnapshot
+    [Migration("20210322055431_ReportColumnIdAddedToReportDataTable")]
+    partial class ReportColumnIdAddedToReportDataTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,7 +151,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                     b.Property<int>("order")
                         .HasColumnType("int");
 
-                    b.Property<int>("responsibleAreaId")
+                    b.Property<int>("reportId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -194,10 +196,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("responsibleAreaId")
+                    b.Property<int>("reportId")
                         .HasColumnType("int");
 
                     b.Property<string>("unit")

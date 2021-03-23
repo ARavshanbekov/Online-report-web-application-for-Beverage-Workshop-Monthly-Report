@@ -4,14 +4,16 @@ using Kelechek_otchet_dlya_nachalnikov.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kelechek_otchet_dlya_nachalnikov.Migrations
 {
     [DbContext(typeof(Kelechek_otchet_dlya_nachalnikovContext))]
-    partial class Kelechek_otchet_dlya_nachalnikovContextModelSnapshot : ModelSnapshot
+    [Migration("20210318091513_CalculationSignColumnAddedToReportColumnTable")]
+    partial class CalculationSignColumnAddedToReportColumnTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,9 +97,6 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                     b.Property<int>("reportID")
                         .HasColumnType("int");
 
-                    b.Property<int>("reportItemID")
-                        .HasColumnType("int");
-
                     b.Property<double>("residualBalance")
                         .HasColumnType("float");
 
@@ -116,16 +115,16 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("memberID")
+                    b.Property<int>("MemberID")
                         .HasColumnType("int");
 
-                    b.Property<int>("responsibleAreaID")
+                    b.Property<int>("ResponsibleAreaID")
                         .HasColumnType("int");
 
-                    b.Property<string>("title")
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
@@ -140,16 +139,16 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("calculationSign")
+                    b.Property<string>("CalculationSign")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("order")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("responsibleAreaId")
+                    b.Property<int>("ReportID")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -164,19 +163,19 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("data")
-                        .HasColumnType("float");
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("order")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("reportColumnId")
+                    b.Property<int>("ReportColID")
                         .HasColumnType("int");
 
-                    b.Property<int>("reportId")
+                    b.Property<int>("ReportID")
                         .HasColumnType("int");
 
-                    b.Property<int>("reportItemId")
+                    b.Property<int>("ReportItemID")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -191,16 +190,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("order")
+                    b.Property<int>("ReportID")
                         .HasColumnType("int");
 
-                    b.Property<int>("responsibleAreaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("unit")
+                    b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
@@ -215,10 +211,10 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("memberId")
+                    b.Property<int>("MemberID")
                         .HasColumnType("int");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
