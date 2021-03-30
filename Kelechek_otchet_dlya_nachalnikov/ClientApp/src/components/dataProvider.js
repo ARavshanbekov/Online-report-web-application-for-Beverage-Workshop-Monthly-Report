@@ -55,8 +55,7 @@ export default {
             console.log({
                 data: json
             });
-
-            localStorage.setItem('reportId', json.id);
+            
             return {
                 data: json
             };

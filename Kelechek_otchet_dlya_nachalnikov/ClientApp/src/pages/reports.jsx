@@ -5,11 +5,8 @@ import { List, Datagrid, TextField, EmailField, Create, Edit, SimpleForm, TextIn
 export const ReportList = props => (
     <List {...props}>
         <Datagrid>
-            <TextField source="id" />
-            <TextField source="ResponsibleAreaID" />
-            <DateField source="Date" />
-            <TextField source="Title" />
-            <TextField source="MemberID" />
+            <TextField source="title" label={"Названия"} />
+            <DateField source="date" label={"Дата"}/>                       
             <EditButton />
         </Datagrid>
     </List>

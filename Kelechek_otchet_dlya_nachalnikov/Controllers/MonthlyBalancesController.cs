@@ -45,29 +45,27 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // PUT: api/MonthlyBalances/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMonthlyBalance(int id, MonthlyBalance monthlyBalance)
+        [HttpPut]
+        public async Task<IActionResult> PutMonthlyBalance(List<MonthlyBalance> monthlyBalances)
         {
-            if (id != monthlyBalance.id)
+            foreach (var monthlyBalance in monthlyBalances)
             {
-                return BadRequest();
-            }
+                _context.Entry(monthlyBalance).State = EntityState.Modified;
 
-            _context.Entry(monthlyBalance).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MonthlyBalanceExists(id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!MonthlyBalanceExists(monthlyBalance.id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
 
@@ -83,7 +81,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             _context.MonthlyBalance.AddRange(monthlyBalance);
             await _context.SaveChangesAsync();
 
-            return StatusCode(201);
+            return CreatedAtAction("GetReport", new { id = monthlyBalance[0].id }, monthlyBalance[0]);
         }
 
         // DELETE: api/MonthlyBalances/5

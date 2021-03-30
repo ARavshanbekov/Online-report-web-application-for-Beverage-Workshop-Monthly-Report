@@ -45,29 +45,27 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // PUT: api/ReportDatas/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReportData(int id, ReportData reportData)
+        [HttpPut]
+        public async Task<IActionResult> PutReportData(List<ReportData> reportDatas)
         {
-            if (id != reportData.id)
-            {
-                return BadRequest();
-            }
+            foreach(var reportData in reportDatas)
+            {                
+                _context.Entry(reportData).State = EntityState.Modified;
 
-            _context.Entry(reportData).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReportDataExists(id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!ReportDataExists(reportData.id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
 
@@ -78,12 +76,12 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult> PostReportData(List<ReportData> reportData)
+        public async Task<ActionResult<ReportData>> PostReportData(List<ReportData> reportData)
         {
             _context.ReportData.AddRange(reportData);
             await _context.SaveChangesAsync();
 
-            return StatusCode(201);
+            return CreatedAtAction("GetReport", new { id = reportData[0].id }, reportData[0]);
         }
 
         // DELETE: api/ReportDatas/5
