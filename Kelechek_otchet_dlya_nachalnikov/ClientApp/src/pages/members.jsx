@@ -1,16 +1,17 @@
 ﻿// in src/members.js
 import * as React from "react";
-import { List, Datagrid, TextField, EmailField, Edit, Create, SimpleForm, TextInput } from 'react-admin';
+import { List, Datagrid, TextField, EmailField, Edit, Create, SimpleForm, TextInput, EditButton } from 'react-admin';
 
 export const MemberList = props => (
     <List {...props}>
-        <Datagrid rowClick="edit">
+        <Datagrid>
             <TextField source="id" />
             <TextField source="firstName" />
             <TextField source="lastName" />
             <TextField source="phoneNumber" />
             <TextField source="username" />
-            <TextField source="password" />            
+            <TextField source="password" />
+            <EditButton />
         </Datagrid>
     </List>
 );

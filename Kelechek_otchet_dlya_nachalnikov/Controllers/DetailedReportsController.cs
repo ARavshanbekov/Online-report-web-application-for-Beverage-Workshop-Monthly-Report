@@ -49,15 +49,19 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             var reportMonth = report.date.Month;
             var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
             var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == reportMonth && r.memberID == report.memberID && r.responsibleAreaID == report.responsibleAreaID).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.reportID == report.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
             {
                 return NotFound();
             }
 
-            var reportData = await _context.ReportData.Where(r => r.id == report.id).ToListAsync();
+            var reportData = await _context.ReportData.Where(r => r.reportId == report.id).ToListAsync();
 
+            if (reportData == null || !reportData.Any())
+            {
+                return NotFound();
+            }
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
             {
@@ -107,9 +111,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Object>> PostReport(Object request)
-        {
-
-            
+        {            
             JObject requestObject = (JObject)JsonConvert.DeserializeObject(request.ToString());
 
             int memberID = (int)requestObject["MemberID"];
@@ -123,15 +125,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            var report = await _context.Report.Where(r => r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Report.Where(r => r.date.Month == month && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
 
-            if (report == null)
+            if (report != null)
             {
                 return NotFound();
             }
-            
-            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+
             var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
@@ -139,15 +139,17 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
+            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();
+            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();            
+
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
-            {
-                report = report,
+            {                
                 reportColumns = reportColumns,
                 reportItems = reportItems,
                 monthlyBalance = monthlyBalance
             };
-            return dynamicObject;
+            return Ok(dynamicObject);
         }
 
         // DELETE: api/DetailedReports/5
