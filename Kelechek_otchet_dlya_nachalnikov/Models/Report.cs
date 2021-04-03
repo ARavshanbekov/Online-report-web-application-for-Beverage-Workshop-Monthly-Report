@@ -14,6 +14,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public int memberID { get; set; }
         public DateTime date { get; set; }
         public String title { get; set; }
+        public Boolean Status { get; set; }
         
         //public ResponsibleArea ResponsibleArea { get; set; }
         //public ICollection<ReportColumn> ReportColumns { get; set; }

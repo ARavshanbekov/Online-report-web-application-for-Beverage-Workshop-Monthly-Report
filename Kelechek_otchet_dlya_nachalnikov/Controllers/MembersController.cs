@@ -26,7 +26,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public async Task<ActionResult<string>> GetMember()
         {            
-            var members = await _context.Member.ToListAsync();
+            var members = await _context.Members.ToListAsync();
             int membersCount = members.Count();
             var data = JsonConvert.SerializeObject(members);
             Response.Headers.Add("Content-Range", membersCount.ToString());
@@ -37,7 +37,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Member>> GetMember(int id)
         {
-            var member = await _context.Member.FindAsync(id);
+            var member = await _context.Members.FindAsync(id);
 
             if (member == null)
             {
@@ -85,7 +85,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<Member>> PostMember(Member member)
         {
-            _context.Member.Add(member);
+            _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReport", new { id = member.id }, member);
@@ -95,13 +95,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Member>> DeleteMember(int id)
         {
-            var member = await _context.Member.FindAsync(id);
+            var member = await _context.Members.FindAsync(id);
             if (member == null)
             {
                 return NotFound();
             }
 
-            _context.Member.Remove(member);
+            _context.Members.Remove(member);
             await _context.SaveChangesAsync();
 
             return member;
@@ -109,7 +109,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool MemberExists(int id)
         {
-            return _context.Member.Any(e => e.id == id);
+            return _context.Members.Any(e => e.id == id);
         }
     }
 }

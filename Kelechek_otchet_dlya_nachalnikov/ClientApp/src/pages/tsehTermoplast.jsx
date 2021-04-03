@@ -30,13 +30,13 @@ import { Table, Row, Col, Container, Input, Form, Button } from 'reactstrap';
 
 const CustomShowButton = ({ record }) => {
     return (
-        <ShowButton basePath="/termoplastIVyduv" record={record} onClick={(e) => {
+        <ShowButton basePath="/tsehTermoplast" record={record} onClick={(e) => {
             localStorage.setItem('reportId', record.id)
         }} />
     )
 }
 
-export const TermoplastList = props => (
+export const ListTsehTermoplast = props => (
     <List {...props}>
         <Datagrid>
             <DateField source="date" label="Дата" />
@@ -46,7 +46,7 @@ export const TermoplastList = props => (
     </List>
 );
 
-export const TermoplastCreate = props => (
+export const CreateTsehTermoplast = props => (
     <Create {...props}>
         <CreateInfo />
     </Create>
@@ -78,7 +78,7 @@ class MyCreateInputField extends React.Component {
     render() {
         const idValue = this.props.id;
         return (
-            <Input type="number" id={idValue} value={this.state.value} onChange={this.handleChange} />
+            <Input type="number" style={{padding: "0"}} id={idValue} value={this.state.value} onChange={this.handleChange} />
         );
     }
 }
@@ -100,6 +100,7 @@ export class CreateInfo extends React.Component {
             balanceCalculationSigns: [],
             balanceAtTheEndIndex: 0,
             report: [],
+            reportStandards: [],
             reportColumns: [],
             reportItems: [],
             monthlyBalance: [],
@@ -124,7 +125,9 @@ export class CreateInfo extends React.Component {
         let report = this.state.report;
         let reportColumns = this.state.reportColumns;
         let reportItems = this.state.reportItems;
-        let monthlyBalance = this.state.monthlyBalance;
+        let monthlyBalance = this.state.monthlyBalance;       
+        let reportStandards = this.state.reportStandards;
+        console.log(reportStandards);
         //create table heads
         //console.table(this.state.balanceOperationNumbers);
         //console.table(this.state.balanceCalculationSigns);
@@ -135,18 +138,26 @@ export class CreateInfo extends React.Component {
 
             let balanceAtTheBeginning = monthlyBalance[xCoordinatePosition].residualBalance;
 
-            childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);
-            childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].unit}</td>);
+            childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);            
             childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{balanceAtTheBeginning}</td>);
             this.state.balanceOperationNumbers[xCoordinatePosition][2] = balanceAtTheBeginning;
             this.state.balanceCalculationSigns[xCoordinatePosition][2] = reportColumns[2].calculationSign;
-            for (let j = 3; j < Object.keys(reportColumns).length - 1; j++) {
-                childrenTB.push(<td><MyCreateInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={j} calculationSign={reportColumns[j].calculationSign} onValueChange={this.handleValueChange} /></td>);
+            for (let j = 2; j < Object.keys(reportColumns).length - 1; j++) {                                
                 //console.table("reportColumns[j] index " + j);
                 //console.log("reportColumns[j].CalculationSign " + reportColumns[j - 3].calculationSign);
                 
                 for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
+                    if ((reportColumns[indexCount].order) == 17 && j == 17) {
+                        let lossValue = reportStandards.find(element => element.reportItemId === reportItems[xCoordinatePosition].id).value;
+                        console.log(lossValue);
+                        childrenTB.push(<td>{lossValue}</td>);
+                        //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
+                        this.state.balanceOperationNumbers[xCoordinatePosition][j] = lossValue;
+                        this.state.balanceCalculationSigns[xCoordinatePosition][j] = reportColumns[indexCount].calculationSign;
+                        break;
+                    }
                     if ((reportColumns[indexCount].order - 1) == j) {
+                        childrenTB.push(<td /*style={{ paddingLeft: "0", paddingRight: "0" }}*/><MyCreateInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={j} calculationSign={reportColumns[j].calculationSign} onValueChange={this.handleValueChange} /></td>);
                         //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
                         this.state.balanceCalculationSigns[xCoordinatePosition][j] = reportColumns[indexCount].calculationSign;
                         break;
@@ -232,7 +243,7 @@ export class CreateInfo extends React.Component {
         let postReport = {
             responsibleAreaID: monthlyBalance[0].responsibleAreaID,
             date: reportDate,
-            title: "Данные по термопласт и выдув",
+            title: "Данные по Цех Термопласт",
             memberID: parseInt(userId)
         }                        
 
@@ -356,7 +367,7 @@ export class CreateInfo extends React.Component {
         let userId = localStorage.getItem('id');
         let request = {
             MemberID: parseInt(userId),
-            Name: "Термопласт и Выдув",
+            Name: "Цех. Термопласт",
             Month: currentMonth
         };
         //console.log(' before request change: ' + request)
@@ -374,9 +385,10 @@ export class CreateInfo extends React.Component {
                     this.setState({                        
                         reportColumns: data.reportColumns,
                         reportItems: data.reportItems,
-                        monthlyBalance: data.monthlyBalance
+                        monthlyBalance: data.monthlyBalance,
+                        reportStandards: data.reportStandards
                     })
-                    
+                   
                     let reportColumns = data.reportColumns;
                     let reportItems = data.reportItems;
                     let monthlyBalance = data.monthlyBalance;
@@ -449,7 +461,7 @@ export class CreateInfo extends React.Component {
         let userId = localStorage.getItem('id');
         let request = {
             MemberID: parseInt(userId),
-            Name: "Термопласт и Выдув",
+            Name: "Цех. Термопласт",
             Month: this.state.currentMonth
         };
         //console.log('before request change: ' + request)
@@ -464,12 +476,13 @@ export class CreateInfo extends React.Component {
                 //console.log(data);
 
                 if (data.monthlyBalance.length > 0) {
-                    this.setState({                        
+                    this.setState({
                         reportColumns: data.reportColumns,
                         reportItems: data.reportItems,
-                        monthlyBalance: data.monthlyBalance
+                        monthlyBalance: data.monthlyBalance,
+                        reportStandards: data.reportStandards
                     })
-                    
+                  
                     let reportColumns = data.reportColumns;
                     let reportItems = data.reportItems;
                     let monthlyBalance = data.monthlyBalance;
@@ -607,7 +620,7 @@ export class CreateInfo extends React.Component {
     }
 }
 
-export const TermoplastEdit = props => {
+export const EditTsehTermoplast = props => {
 
     return (
         <Edit {...props} >
@@ -642,7 +655,7 @@ class MyEditInputField extends React.Component {
     render() {
         const idValue = this.props.id;
         return (
-            <Input type="number" id={idValue} value={this.state.value} onChange={this.handleChange} />
+            <Input type="number" style={{padding: "0"}} id={idValue} value={this.state.value} onChange={this.handleChange} />
         );
     }
 }
@@ -688,8 +701,7 @@ export class EditInfo extends React.Component {
                     if ((monthlyBalance[indexCount].order) == xCoordinatePosition) {
                         let balanceAtTheBeginning = monthlyBalance[indexCount].initialBalance;
                         //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
-                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);
-                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].unit}</td>);
+                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);              
                         childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{balanceAtTheBeginning}</td>);
                         this.state.balanceOperationNumbers[xCoordinatePosition][2] = balanceAtTheBeginning;
                         this.state.balanceCalculationSigns[xCoordinatePosition][2] = reportColumns[2].calculationSign;
@@ -770,8 +782,7 @@ export class EditInfo extends React.Component {
                     if ((monthlyBalance[indexCount].order) == xCoordinatePosition) {
                         let balanceAtTheBeginning = monthlyBalance[indexCount].initialBalance;
                         //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
-                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);
-                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].unit}</td>);
+                        childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);                        
                         childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{balanceAtTheBeginning}</td>);
                         this.state.balanceOperationNumbers[xCoordinatePosition][2] = balanceAtTheBeginning;
                         this.state.balanceCalculationSigns[xCoordinatePosition][2] = reportColumns[2].calculationSign;
@@ -1119,7 +1130,7 @@ export class EditInfo extends React.Component {
     }
 }
 
-export const TermoplastShow = props => {
+export const ShowTsehTermoplast = props => {
     return (
         <Show {...props} >
             <ShowInfo />

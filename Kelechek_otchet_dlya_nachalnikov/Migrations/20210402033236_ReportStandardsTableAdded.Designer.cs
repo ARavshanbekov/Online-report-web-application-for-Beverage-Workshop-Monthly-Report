@@ -4,14 +4,16 @@ using Kelechek_otchet_dlya_nachalnikov.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kelechek_otchet_dlya_nachalnikov.Migrations
 {
     [DbContext(typeof(Kelechek_otchet_dlya_nachalnikovContext))]
-    partial class Kelechek_otchet_dlya_nachalnikovContextModelSnapshot : ModelSnapshot
+    [Migration("20210402033236_ReportStandardsTableAdded")]
+    partial class ReportStandardsTableAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,9 +118,6 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
@@ -218,13 +217,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("reportColumnId")
-                        .HasColumnType("int");
-
                     b.Property<int>("reportItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("responsibleAreaId")
                         .HasColumnType("int");
 
                     b.Property<double>("value")

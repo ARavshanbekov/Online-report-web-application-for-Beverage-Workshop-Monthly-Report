@@ -27,7 +27,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         public ActionResult<string> Get()
         {            
             int responsibleAreaID = _context.ResponsibleAreas.Where(n => n.name.Equals("ЦЕХ розлива №2")).FirstOrDefault().id;
-            var reports = _context.Report.Where(r => r.responsibleAreaID == responsibleAreaID).ToList();
+            var reports = _context.Reports.Where(r => r.responsibleAreaID == responsibleAreaID).ToList();
             int reportCount = reports.Count();
             var data = JsonConvert.SerializeObject(reports);
             Response.Headers.Add("Content-Range", reportCount.ToString());
@@ -39,7 +39,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReport(int id)
         {
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
 
             if (report == null)
             {
@@ -87,7 +87,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<Report>> PostReport(Report report)
         {
-            _context.Report.Add(report);
+            _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReport", new { id = report.id }, report);
@@ -97,13 +97,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Report>> DeleteReport(int id)
         {
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
             if (report == null)
             {
                 return NotFound();
             }
 
-            _context.Report.Remove(report);
+            _context.Reports.Remove(report);
             await _context.SaveChangesAsync();
 
             return report;
@@ -111,7 +111,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool ReportExists(int id)
         {
-            return _context.Report.Any(e => e.id == id);
+            return _context.Reports.Any(e => e.id == id);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public async Task<ActionResult<string>> GetReport()
         {            
-            var reports = await _context.Report.ToListAsync();
+            var reports = await _context.Reports.ToListAsync();
             int reportsCount = reports.Count();
             var output = JsonConvert.SerializeObject(reports);
             Response.Headers.Add("Content-Range", reportsCount.ToString());
@@ -37,7 +37,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReport(int id)
         {
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
 
             if (report == null)
             {
@@ -84,7 +84,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<Report>> PostReport(Report report)
         {
-            _context.Report.Add(report);
+            _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReport", new { id = report.id }, report);
@@ -94,13 +94,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Report>> DeleteReport(int id)
         {
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
             if (report == null)
             {
                 return NotFound();
             }
 
-            _context.Report.Remove(report);
+            _context.Reports.Remove(report);
             await _context.SaveChangesAsync();
 
             return report;
@@ -108,7 +108,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool ReportExists(int id)
         {
-            return _context.Report.Any(e => e.id == id);
+            return _context.Reports.Any(e => e.id == id);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         public async Task<ActionResult<IEnumerable<Report>>> GetReport()
         {
 
-            return await _context.Report.ToListAsync();
+            return await _context.Reports.ToListAsync();
         }
 
         // GET: api/DetailedReports/5
@@ -39,7 +39,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         public async Task<ActionResult<Object>> GetReport(int id)
         {
 
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
 
             if (report == null)
             {
@@ -47,9 +47,9 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             }
 
             var reportMonth = report.date.Month;
-            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.reportID == report.id).ToListAsync();
+            var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+            var reportItems = await _context.ReportItems.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.reportID == report.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
             {
@@ -125,29 +125,42 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            var report = await _context.Report.Where(r => r.date.Month == month && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Reports.Where(r => r.date.Month == month && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
 
             if (report != null)
             {
                 return NotFound();
             }
 
-            var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
             {
                 return NotFound();
             }
 
-            var reportColumns = await _context.ReportColumn.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();
-            var reportItems = await _context.ReportItem.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();            
+            var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();            
 
+            if (reportColumns == null || !reportColumns.Any())
+            {
+                return NotFound();
+            }
+
+            var reportItems = await _context.ReportItems.Where(r => r.responsibleAreaId == responsibleArea.id).ToListAsync();
+
+            if (reportItems == null || !reportItems.Any())
+            {
+                return NotFound();
+            }
+
+            var reportStandards = await _context.ReportStandards.Where(s => s.responsibleAreaId == responsibleArea.id).ToListAsync();
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
-            {                
+            {
                 reportColumns = reportColumns,
                 reportItems = reportItems,
-                monthlyBalance = monthlyBalance
+                monthlyBalance = monthlyBalance,
+                reportStandards = reportStandards
             };
             return Ok(dynamicObject);
         }
@@ -156,13 +169,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Report>> DeleteReport(int id)
         {
-            var report = await _context.Report.FindAsync(id);
+            var report = await _context.Reports.FindAsync(id);
             if (report == null)
             {
                 return NotFound();
             }
 
-            _context.Report.Remove(report);
+            _context.Reports.Remove(report);
             await _context.SaveChangesAsync();
 
             return report;
@@ -170,7 +183,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool ReportExists(int id)
         {
-            return _context.Report.Any(e => e.id == id);
+            return _context.Reports.Any(e => e.id == id);
         }
     }
 }
