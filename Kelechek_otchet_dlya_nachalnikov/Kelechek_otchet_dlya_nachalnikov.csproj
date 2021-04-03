@@ -37,6 +37,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210315044812_MemberPageByRoleTableAdded.cs" />
     <Compile Remove="Migrations\20210315044812_MemberPageByRoleTableAdded.Designer.cs" />
+    <Compile Remove="Migrations\20210402032517_StandardTableAdded.cs" />
+    <Compile Remove="Migrations\20210402032517_StandardTableAdded.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

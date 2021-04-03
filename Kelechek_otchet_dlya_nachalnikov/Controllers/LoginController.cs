@@ -26,7 +26,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public async Task<ActionResult<string>> GetMember()
         {
-            var members = await _context.Member.ToListAsync();
+            var members = await _context.Members.ToListAsync();
             int membersCount = members.Count();
             var data = JsonConvert.SerializeObject(members);
             Response.Headers.Add("Content-Range", membersCount.ToString());
@@ -37,7 +37,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Member>> GetMember(int id)
         {
-            var member = await _context.Member.FindAsync(id);
+            var member = await _context.Members.FindAsync(id);
 
             if (member == null)
             {
@@ -85,7 +85,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<Member>> PostMember(Member request)
         {
-            var member = await _context.Member.Where(m => m.username.Equals(request.username) && m.password.Equals(request.password)).FirstOrDefaultAsync();
+            var member = await _context.Members.Where(m => m.username.Equals(request.username) && m.password.Equals(request.password)).FirstOrDefaultAsync();
             if (member == null)
             {
                 return NotFound();
@@ -98,13 +98,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Member>> DeleteMember(int id)
         {
-            var member = await _context.Member.FindAsync(id);
+            var member = await _context.Members.FindAsync(id);
             if (member == null)
             {
                 return NotFound();
             }
 
-            _context.Member.Remove(member);
+            _context.Members.Remove(member);
             await _context.SaveChangesAsync();
 
             return member;
@@ -112,7 +112,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool MemberExists(int id)
         {
-            return _context.Member.Any(e => e.id == id);
+            return _context.Members.Any(e => e.id == id);
         }
     }
 }

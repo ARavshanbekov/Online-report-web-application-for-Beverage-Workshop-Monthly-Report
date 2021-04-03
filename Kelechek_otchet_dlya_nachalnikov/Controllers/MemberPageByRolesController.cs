@@ -25,14 +25,14 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberPageByRole>>> GetMemberPageByRole()
         {
-            return await _context.MemberPageByRole.ToListAsync();
+            return await _context.MemberPageByRoles.ToListAsync();
         }
 
         // GET: api/MemberPageByRoles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<List<MemberPageByRole>>> GetMemberPageByRole(int id)
         {
-            var memberPageByRole = await _context.MemberPageByRole.Where(m => m.memberId == id).ToListAsync();
+            var memberPageByRole = await _context.MemberPageByRoles.Where(m => m.memberId == id).ToListAsync();
 
             if (memberPageByRole == null)
             {
@@ -80,7 +80,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<MemberPageByRole>> PostMemberPageByRole(MemberPageByRole memberPageByRole)
         {
-            _context.MemberPageByRole.Add(memberPageByRole);
+            _context.MemberPageByRoles.Add(memberPageByRole);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMemberPageByRole", new { id = memberPageByRole.id }, memberPageByRole);
@@ -90,13 +90,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<MemberPageByRole>> DeleteMemberPageByRole(int id)
         {
-            var memberPageByRole = await _context.MemberPageByRole.FindAsync(id);
+            var memberPageByRole = await _context.MemberPageByRoles.FindAsync(id);
             if (memberPageByRole == null)
             {
                 return NotFound();
             }
 
-            _context.MemberPageByRole.Remove(memberPageByRole);
+            _context.MemberPageByRoles.Remove(memberPageByRole);
             await _context.SaveChangesAsync();
 
             return memberPageByRole;
@@ -104,7 +104,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool MemberPageByRoleExists(int id)
         {
-            return _context.MemberPageByRole.Any(e => e.id == id);
+            return _context.MemberPageByRoles.Any(e => e.id == id);
         }
     }
 }

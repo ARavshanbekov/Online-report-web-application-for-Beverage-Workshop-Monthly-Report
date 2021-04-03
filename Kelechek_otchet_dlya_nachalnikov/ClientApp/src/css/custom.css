@@ -13,6 +13,11 @@ code {
   border-color: #1861ac;
 }
 
+.tableHeadSticky {
+    position: sticky;
+    top: 0; /* Don't forget this, required for the stickiness */
+}
+
 Input[type=number]::-webkit-inner-spin-button,
 Input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;

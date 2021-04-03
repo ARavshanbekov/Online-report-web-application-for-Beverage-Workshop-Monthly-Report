@@ -13,20 +13,20 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class termoplastIVyduvController : ControllerBase
+    public class tsehTermoplastController : ControllerBase
     {
         private readonly Kelechek_otchet_dlya_nachalnikovContext _context;
 
-        public termoplastIVyduvController(Kelechek_otchet_dlya_nachalnikovContext context)
+        public tsehTermoplastController(Kelechek_otchet_dlya_nachalnikovContext context)
         {
             _context = context;
         }
 
-        // GET: api/termoplastIVyduv
+        // GET: api/tsehTermoplast
         [HttpGet]
         public async Task<ActionResult<String>> GetReport()
         {
-            var responsibleArea = await _context.ResponsibleAreas.Where(n => n.name.Equals("Термопласт и Выдув")).FirstOrDefaultAsync();
+            var responsibleArea = await _context.ResponsibleAreas.Where(n => n.name.Equals("Цех. Термопласт")).FirstOrDefaultAsync();
             int responsibleAreaID = responsibleArea.id;
             var reports = _context.Reports.Where(r => r.responsibleAreaID == responsibleAreaID).ToList();
             int reportCount = reports.Count();
@@ -36,7 +36,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return data;
         }
 
-        // GET: api/termoplastIVyduv/5
+        // GET: api/tsehTermoplast/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReport(int id)
         {
@@ -48,27 +48,10 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            //var reportColumns = await _context.ReportColumn.Where(r => r.reportId == report.id).ToListAsync();
-            //var reportItems = await _context.ReportItem.Where(r => r.reportId == report.id).ToListAsync();
-            //var monthlyBalance = await _context.MonthlyBalance.Where(r => r.date.Month == reportDate.Month && r.memberID == report.memberID && r.responsibleAreaID == report.responsibleAreaID).ToListAsync();
-            ////  
-            //if (monthlyBalance == null || !monthlyBalance.Any())
-            //{
-            //    return NotFound();
-            //}
-
-            ////var mergedObject = Merger.Merge(reportItems, reportColumns);
-            //var dynamicObject = new
-            //{
-            //    report = report,
-            //    reportColumns = reportColumns,
-            //    reportItems = reportItems,
-            //    monthlyBalance = monthlyBalance
-            //};
             return report;
         }
 
-        // PUT: api/termoplastIVyduv/5
+        // PUT: api/tsehTermoplast/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
@@ -100,7 +83,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return NoContent();
         }
 
-        // POST: api/termoplastIVyduv
+        // POST: api/tsehTermoplast
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
@@ -112,7 +95,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             return CreatedAtAction("GetReport", new { id = report.id }, report);
         }
 
-        // DELETE: api/termoplastIVyduv/5
+        // DELETE: api/tsehTermoplast/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Report>> DeleteReport(int id)
         {

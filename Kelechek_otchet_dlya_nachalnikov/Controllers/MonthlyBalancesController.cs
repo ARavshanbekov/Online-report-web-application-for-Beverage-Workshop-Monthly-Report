@@ -25,14 +25,14 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MonthlyBalance>>> GetMonthlyBalance()
         {
-            return await _context.MonthlyBalance.ToListAsync();
+            return await _context.MonthlyBalances.ToListAsync();
         }
 
         // GET: api/MonthlyBalances/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MonthlyBalance>> GetMonthlyBalance(int id)
         {
-            var monthlyBalance = await _context.MonthlyBalance.FindAsync(id);
+            var monthlyBalance = await _context.MonthlyBalances.FindAsync(id);
 
             if (monthlyBalance == null)
             {
@@ -78,7 +78,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpPost]
         public async Task<ActionResult<MonthlyBalance>> PostMonthlyBalance(List<MonthlyBalance> monthlyBalance)
         {
-            _context.MonthlyBalance.AddRange(monthlyBalance);
+            _context.MonthlyBalances.AddRange(monthlyBalance);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReport", new { id = monthlyBalance[0].id }, monthlyBalance[0]);
@@ -88,13 +88,13 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<MonthlyBalance>> DeleteMonthlyBalance(int id)
         {
-            var monthlyBalance = await _context.MonthlyBalance.FindAsync(id);
+            var monthlyBalance = await _context.MonthlyBalances.FindAsync(id);
             if (monthlyBalance == null)
             {
                 return NotFound();
             }
 
-            _context.MonthlyBalance.Remove(monthlyBalance);
+            _context.MonthlyBalances.Remove(monthlyBalance);
             await _context.SaveChangesAsync();
 
             return monthlyBalance;
@@ -102,7 +102,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 
         private bool MonthlyBalanceExists(int id)
         {
-            return _context.MonthlyBalance.Any(e => e.id == id);
+            return _context.MonthlyBalances.Any(e => e.id == id);
         }
     }
 }

@@ -14,13 +14,15 @@ namespace Kelechek_otchet_dlya_nachalnikov.Data
         {
         }
 
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.Member> Member { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.Report> Report { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportColumn> ReportColumn { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.Member> Members { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.Report> Reports { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportColumn> ReportColumns { get; set; }
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportData> ReportData { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportItem> ReportItem { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportItem> ReportItems { get; set; }
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ResponsibleArea> ResponsibleAreas { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MonthlyBalance> MonthlyBalance { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MemberPageByRole> MemberPageByRole { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MonthlyBalance> MonthlyBalances { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MemberPageByRole> MemberPageByRoles { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportStandard> ReportStandards { get; set; }
+
     }
 }
