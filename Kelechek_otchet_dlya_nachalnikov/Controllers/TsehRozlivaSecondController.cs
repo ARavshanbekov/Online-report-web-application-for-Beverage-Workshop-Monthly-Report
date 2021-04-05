@@ -13,11 +13,11 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TsehRozlivaController : ControllerBase
+    public class TsehRozlivaSecondController : ControllerBase
     {
         private readonly Kelechek_otchet_dlya_nachalnikovContext _context;
 
-        public TsehRozlivaController(Kelechek_otchet_dlya_nachalnikovContext context)
+        public TsehRozlivaSecondController(Kelechek_otchet_dlya_nachalnikovContext context)
         {
             _context = context;
         }

@@ -5,7 +5,7 @@ import { MemberList, MemberCreate, MemberEdit } from './pages/members';
 import { ReportList } from './pages/reports';
 import { TermoplastList, TermoplastCreate, TermoplastEdit, TermoplastShow } from './pages/termoplastIVyduv';
 import { CreateTsehTermoplast, EditTsehTermoplast, ShowTsehTermoplast, ListTsehTermoplast } from './pages/tsehTermoplast';
-import { TsehRozlivaList, TsehRozlivaCreate, TsehRozlivaEdit } from './pages/tsehRozlivaSecond';
+import { ListTsehRozliva, CreateTsehRozliva, EditTsehRozliva } from './pages/tsehRozlivaSecond';
 import dataProvider from './components/dataProvider';
 import authProvider from './components/authProvider';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
@@ -30,7 +30,7 @@ const App = () => {
                     ? <Resource name="tsehTermoplast" options={{ label: "Цех Термопласт" }} list={ListTsehTermoplast} create={CreateTsehTermoplast} edit={EditTsehTermoplast} show={ShowTsehTermoplast} />
                     : null,
                 permissions === 'нач. цех №2'
-                    ? <Resource name="tsehRozliva" options={{ label: "Цех розлива №2" }} list={TsehRozlivaList} create={TsehRozlivaCreate} edit={TsehRozlivaEdit} />
+                    ? <Resource name="tsehRozlivaSecond" options={{ label: "Цех розлива №2" }} list={ListTsehRozliva} create={CreateTsehRozliva} edit={EditTsehRozliva} />
                     : null,
                 permissions === 'chiefAccountant'
                     ? <Resource name="termoplastIVyduv" options={{ label: "Термопласт и выдув" }} list={TermoplastList} show={TermoplastShow} />

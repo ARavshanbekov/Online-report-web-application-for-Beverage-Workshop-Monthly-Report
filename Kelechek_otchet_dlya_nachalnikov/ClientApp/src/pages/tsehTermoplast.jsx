@@ -2,14 +2,9 @@
 import React from "react";
 import _uniqueId from 'lodash/uniqueId';
 import "react-datepicker/dist/react-datepicker.css";
-import { useHistory } from "react-router-dom";
-import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { StickyContainer, Sticky } from "react-sticky";
 import './../css/custom.css';
-import StickyTable from "react-sticky-table-thead";
-
 import {
     List,
     Datagrid,    
