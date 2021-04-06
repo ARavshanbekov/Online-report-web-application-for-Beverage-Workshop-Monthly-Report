@@ -10,8 +10,8 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
     {
         [Key]
         public int id { get; set; }
-        public int responsibleAreaID { get; set; }   
-        public int memberID { get; set; }
+        public int responsibleAreaId { get; set; }   
+        public int memberId { get; set; }
         public DateTime date { get; set; }
         public String title { get; set; }
         public Boolean Status { get; set; }

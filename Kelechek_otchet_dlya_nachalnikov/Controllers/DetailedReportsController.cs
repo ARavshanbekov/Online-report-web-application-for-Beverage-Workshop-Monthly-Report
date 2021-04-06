@@ -47,9 +47,9 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             }
 
             var reportMonth = report.date.Month;
-            var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var reportItems = await _context.ReportItems.Where(r => r.responsibleAreaId == report.responsibleAreaID).ToListAsync();
-            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.reportID == report.id).ToListAsync();
+            var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == report.responsibleAreaId).ToListAsync();
+            var reportItems = await _context.ReportItems.Where(r => r.responsibleAreaId == report.responsibleAreaId).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.reportId == report.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
             {
@@ -125,14 +125,14 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            var report = await _context.Reports.Where(r => r.date.Month == month && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).FirstOrDefaultAsync();
+            var report = await _context.Reports.Where(r => r.date.Month == month && r.memberId == memberID && r.responsibleAreaId == responsibleArea.id).FirstOrDefaultAsync();
 
             if (report != null)
             {
                 return NotFound();
             }
 
-            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberID == memberID && r.responsibleAreaID == responsibleArea.id).ToListAsync();
+            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberId == memberID && r.responsibleAreaId == responsibleArea.id).ToListAsync();
             //  
             if (monthlyBalance == null || !monthlyBalance.Any())
             {

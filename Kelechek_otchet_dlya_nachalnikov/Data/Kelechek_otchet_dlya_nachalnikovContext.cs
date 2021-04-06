@@ -20,8 +20,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Data
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportData> ReportData { get; set; }
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportItem> ReportItems { get; set; }
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ResponsibleArea> ResponsibleAreas { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MonthlyBalance> MonthlyBalances { get; set; }
-        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MemberPageByRole> MemberPageByRoles { get; set; }
+        public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MonthlyBalance> MonthlyBalances { get; set; }        
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportStandard> ReportStandards { get; set; }
 
     }
