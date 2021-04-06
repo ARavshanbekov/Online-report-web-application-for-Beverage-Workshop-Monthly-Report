@@ -26,8 +26,8 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {            
-            int responsibleAreaID = _context.ResponsibleAreas.Where(n => n.name.Equals("ЦЕХ розлива №2")).FirstOrDefault().id;
-            var reports = _context.Reports.Where(r => r.responsibleAreaID == responsibleAreaID).ToList();
+            int responsibleAreaId = _context.ResponsibleAreas.Where(n => n.name.Equals("ЦЕХ розлива №2")).FirstOrDefault().id;
+            var reports = _context.Reports.Where(r => r.responsibleAreaId == responsibleAreaId).ToList();
             int reportCount = reports.Count();
             var data = JsonConvert.SerializeObject(reports);
             Response.Headers.Add("Content-Range", reportCount.ToString());

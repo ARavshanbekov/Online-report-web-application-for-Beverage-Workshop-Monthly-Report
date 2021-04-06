@@ -28,7 +28,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         {
             var responsibleArea = await _context.ResponsibleAreas.Where(n => n.name.Equals("Цех. Термопласт")).FirstOrDefaultAsync();
             int responsibleAreaID = responsibleArea.id;
-            var reports = _context.Reports.Where(r => r.responsibleAreaID == responsibleAreaID).ToList();
+            var reports = _context.Reports.Where(r => r.responsibleAreaId == responsibleAreaID).ToList();
             int reportCount = reports.Count();
             var data = JsonConvert.SerializeObject(reports);
             Response.Headers.Add("Content-Range", reportCount.ToString());
