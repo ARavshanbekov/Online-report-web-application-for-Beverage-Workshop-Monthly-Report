@@ -18,12 +18,57 @@
     SavingAmountColumnOrderOfTsehRozlivaSecond:11,
     SavingSumColumnOrderOfTsehRozlivaSecond: 12,
     ResidualBalanceColumnOrderOfTsehRozlivaSecond: 13,
+
+    /* Tseh Rozliva First */
+    PathToTsehRozlivaFirst: "/tsehRozlivaFirst",
+    ResponsibleAreaNameOfTsehRozlivaFirst: "ЦЕХ розлива №1",
+    TitleForTsehRozlivaFirst: "Данные по ЦЕХ №1",
+    BalanceAtTheBeginningColumnOrderOfTsehRozlivaFirst: 1,
+    ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaFirst: 2,
+    CompletedInTheWarehouseColumnOrderOfTsehRozlivaFirst: 3,
+    LossValueColumnOrderOfTsehRozlivaFirst: 4,
+    AmountFromLossesColumnOrderOfTsehRozlivaFirst: 5,
+    InvoiceDefectColumnOrderOfTsehRozlivaFirst: 6,
+    ExpectedTotalConsumptionColumnOrderOfTsehRozlivaFirst: 7,
+    ActualTotalExpenseColumnOrderOfTsehRozlivaFirst: 8,
+    OverrunColumnOrderOfTsehRozlivaFirst: 9,
+    OverrunAmountColumnOrderOfTsehRozlivaFirst: 9,
+    OverrunSumColumnOrderOfTsehRozlivaFirst: 10,
+    SavingColumnOrderOfTsehRozlivaFirst: 11,
+    SavingAmountColumnOrderOfTsehRozlivaFirst: 11,
+    SavingSumColumnOrderOfTsehRozlivaFirst: 12,
+    ResidualBalanceColumnOrderOfTsehRozlivaFirst: 13,
     
+/* Tseh Termoplast */
+    PathToTsehTermoplast: "/tsehTermoplast",
+    ResponsibleAreaNameOfTsehTermoplast: "ЦЕХ розлива №2",
+    TitleForTsehTermoplast: "Данные по ЦЕХ №2",
+    BalanceAtTheBeginningColumnOrderOfTsehTermoplast: 1,
+    ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast: 2,
+    ReturnFromTsehFirstColumnOrderOfTsehTermoplast: 3,
+    ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast: 4,
+    ReturnFromTsehSecondColumnOrderOfTsehTermoplast: 5,
+    ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast: 6,
+    ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast: 7,
+    TotalArrivalExpenseColumnOrderOfTsehTermoplast: 8,
+    СonsumptionVyduvColumnOrderOfTsehTermoplast: 9,
+    СonsumptionTsehFirstColumnOrderOfTsehTermoplast: 10,
+    ConsumptionCrushedColumnOrderOfTsehTermoplast: 11,
+    LossValueColumnOrderOfTsehTermoplast: 12,
+    ConsumptionInvoiceColumnOrderOfTsehTermoplast: 13,    
+    ResidualBalanceColumnOrderOfTsehTermoplast: 14,
 
     TitleForTsehTermoplast: "Данные по Цех Термопласт",    
     ResponsibleAreaNameOfTsehTermoplast: "Цех. Термопласт",
     PathToReportsController: "/api/reports/",
+    PathToDetailedReportsController: "/api/DetailedReports/",
     PathToMonthlyBalancesController: "/api/monthlyBalances/",    
-    LossValueColumnOrderOfTsehTermoplast: 17
+    LossValueColumnOrderOfTsehTermoplast: 17,
+
+/* Permissions */
+    permissionAdmin: "admin",
+    //permissionWarehouseManager: "warehouseManager",
+    permissionWarehouseManagerOfRawMaterialsAndSupplies: "WarehouseManagerOfRawMaterialsAndSupplies",
+    
 };
 export { CONSTANTS };
