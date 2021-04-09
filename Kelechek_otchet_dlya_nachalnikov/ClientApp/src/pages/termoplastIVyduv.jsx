@@ -707,13 +707,13 @@ export class EditInfo extends React.Component {
 
                                     for (let reportDataXIndex = 0; reportDataXIndex < Object.keys(reportData).length; reportDataXIndex++) {
                                         if (reportData[reportDataXIndex].reportItemId == reportItems[j].id && reportData[reportDataXIndex].reportColumnId == reportColumns[reportColumnIdIndex].id) {
-                                            //console.log("reportData[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportData[reportDataXIndex].reportItemId + "==" + reportItems[j].id)
+                                            //console.log("reportDatas[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportDatas[reportDataXIndex].reportItemId + "==" + reportItems[j].id)
                                             this.state.balanceCalculationSigns[xCoordinatePosition][yCoordinatePosition] = reportColumns[reportColumnIdIndex].calculationSign;
                                             this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = reportData[reportDataXIndex].data;
                                             childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} calculationSign={reportColumns[reportColumnIdIndex].calculationSign} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} onValueChange={this.handleValueChange} /></td>);
                                             //console.log("reportDataXIndex", reportDataXIndex);
-                                            //console.log("input field value is: " + reportData[reportDataXIndex].data);
-                                            //console.log(reportData[reportDataXIndex]);
+                                            //console.log("input field value is: " + reportDatas[reportDataXIndex].data);
+                                            //console.log(reportDatas[reportDataXIndex]);
                                             break;
                                         }
                                     }
@@ -789,7 +789,7 @@ export class EditInfo extends React.Component {
 
                                     for (let reportDataXIndex = 0; reportDataXIndex < Object.keys(reportData).length; reportDataXIndex++) {
                                         if (reportData[reportDataXIndex].reportItemId == reportItems[j].id && reportData[reportDataXIndex].reportColumnId == reportColumns[reportColumnIdIndex].id) {
-                                            //console.log("reportData[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportData[reportDataXIndex].reportItemId + "==" + reportItems[j].id)                                                 
+                                            //console.log("reportDatas[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportDatas[reportDataXIndex].reportItemId + "==" + reportItems[j].id)                                                 
                                             childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} calculationSign={reportColumns[reportColumnIdIndex].calculationSign} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} onValueChange={this.handleValueChange} /></td>);
                                             
                                             break;
@@ -1186,13 +1186,13 @@ export class ShowInfo extends React.Component {
 
                                     for (let reportDataXIndex = 0; reportDataXIndex < Object.keys(reportData).length; reportDataXIndex++) {
                                         if (reportData[reportDataXIndex].reportItemId == reportItems[j].id && reportData[reportDataXIndex].reportColumnId == reportColumns[reportColumnIdIndex].id) {
-                                            //console.log("reportData[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportData[reportDataXIndex].reportItemId + "==" + reportItems[j].id)
+                                            //console.log("reportDatas[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportDatas[reportDataXIndex].reportItemId + "==" + reportItems[j].id)
                                             this.state.balanceCalculationSigns[xCoordinatePosition][yCoordinatePosition] = reportColumns[reportColumnIdIndex].calculationSign;
                                             this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = reportData[reportDataXIndex].data;
                                             childrenTB.push(<td key={_uniqueId()}>{this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]}</td>);
                                             //console.log("reportDataXIndex", reportDataXIndex);
-                                            //console.log("input field value is: " + reportData[reportDataXIndex].data);
-                                            //console.log(reportData[reportDataXIndex]);
+                                            //console.log("input field value is: " + reportDatas[reportDataXIndex].data);
+                                            //console.log(reportDatas[reportDataXIndex]);
                                             break;
                                         }
                                     }
@@ -1268,7 +1268,7 @@ export class ShowInfo extends React.Component {
 
                                     for (let reportDataXIndex = 0; reportDataXIndex < Object.keys(reportData).length; reportDataXIndex++) {
                                         if (reportData[reportDataXIndex].reportItemId == reportItems[j].id && reportData[reportDataXIndex].reportColumnId == reportColumns[reportColumnIdIndex].id) {
-                                            //console.log("reportData[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportData[reportDataXIndex].reportItemId + "==" + reportItems[j].id)                                                 
+                                            //console.log("reportDatas[reportDataXIndex].reportItemId == reportItems[reportColumnIdIndex].id ==> " + reportDatas[reportDataXIndex].reportItemId + "==" + reportItems[j].id)                                                 
                                             childrenTB.push(<td key={_uniqueId()}>{this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]}</td>);
 
                                             break;

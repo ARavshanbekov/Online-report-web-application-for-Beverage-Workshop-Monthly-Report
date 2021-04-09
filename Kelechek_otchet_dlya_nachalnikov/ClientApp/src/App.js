@@ -6,6 +6,7 @@ import { ReportList } from './pages/reports';
 import { TermoplastList, TermoplastCreate, TermoplastEdit, TermoplastShow } from './pages/termoplastIVyduv';
 import { CreateTsehTermoplast, EditTsehTermoplast, ShowTsehTermoplast, ListTsehTermoplast } from './pages/tsehTermoplast';
 import { ListTsehRozlivaSecond, CreateTsehRozlivaSecond, EditTsehRozlivaSecond, ShowTsehRozlivaSecond } from './pages/tsehRozlivaSecond';
+import { ListTsehRozlivaFirst, CreateTsehRozlivaFirst, EditTsehRozlivaFirst, ShowTsehRozlivaFirst } from './pages/tsehRozlivaFirst';
 import dataProvider from './components/dataProvider';
 import authProvider from './components/authProvider';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
@@ -22,15 +23,15 @@ const App = () => {
             {permissions => [
                 permissions === 'admin'
                     ? <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} create={MemberCreate} edit={MemberEdit} />
-                    : null,                
-                permissions === 'завсклад'
-                    ? <Resource name="termoplastIVyduv" options={{ label: "Термопласт и выдув" }} list={TermoplastList} create={TermoplastCreate} edit={TermoplastEdit} show={TermoplastShow} />
-                    : null,
+                    : null,                                
                 permissions === 'завсклад'
                     ? <Resource name="tsehTermoplast" options={{ label: "Цех Термопласт" }} list={ListTsehTermoplast} create={CreateTsehTermoplast} edit={EditTsehTermoplast} show={ShowTsehTermoplast} />
                     : null,
                 permissions === 'нач. цех №2'
                     ? <Resource name="tsehRozlivaSecond" options={{ label: "Цех розлива №2" }} list={ListTsehRozlivaSecond} create={CreateTsehRozlivaSecond} edit={EditTsehRozlivaSecond} show={ShowTsehRozlivaSecond} />
+                    : null,
+                permissions === 'нач. цех №1'
+                    ? <Resource name="tsehRozlivaFirst" options={{ label: "Цех розлива №1" }} list={ListTsehRozlivaFirst} create={CreateTsehRozlivaFirst} edit={EditTsehRozlivaFirst} show={ShowTsehRozlivaFirst} />
                     : null,
                 permissions === 'chiefAccountant'
                     ? <Resource name="termoplastIVyduv" options={{ label: "Термопласт и выдув" }} list={TermoplastList} show={TermoplastShow} />

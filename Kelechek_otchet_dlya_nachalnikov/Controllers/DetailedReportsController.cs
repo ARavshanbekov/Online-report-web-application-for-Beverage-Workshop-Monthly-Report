@@ -56,9 +56,16 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            var reportData = await _context.ReportData.Where(r => r.reportId == report.id).ToListAsync();
+            var reportDatas = await _context.ReportData.Where(r => r.reportId == report.id).ToListAsync();
 
-            if (reportData == null || !reportData.Any())
+            if (reportDatas == null || !reportDatas.Any())
+            {
+                return NotFound();
+            }
+
+            var reportStandards = await _context.ReportStandards.Where(r => r.responsibleAreaId == report.responsibleAreaId).ToListAsync();
+
+            if (reportStandards == null || !reportStandards.Any())
             {
                 return NotFound();
             }
@@ -68,8 +75,9 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 report = report,
                 reportColumns = reportColumns,
                 reportItems = reportItems,
-                monthlyBalance = monthlyBalance,
-                reportData = reportData
+                monthlyBalances = monthlyBalance,
+                reportDatas = reportDatas,
+                reportStandards = reportStandards
             };
             return Ok(dynamicObject);
         }
@@ -114,7 +122,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         {            
             JObject requestObject = (JObject)JsonConvert.DeserializeObject(request.ToString());
 
-            int memberID = (int)requestObject["MemberID"];
+            int memberID = (int)requestObject["MemberId"];
             string name = (string)requestObject["Name"];   
             int month = (int)requestObject["Month"];
 
@@ -132,9 +140,9 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
-            var monthlyBalance = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberId == memberID && r.responsibleAreaId == responsibleArea.id).ToListAsync();
+            var monthlyBalances = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberId == memberID && r.responsibleAreaId == responsibleArea.id).ToListAsync();
             //  
-            if (monthlyBalance == null || !monthlyBalance.Any())
+            if (monthlyBalances == null || !monthlyBalances.Any())
             {
                 return NotFound();
             }
@@ -154,12 +162,17 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             }
 
             var reportStandards = await _context.ReportStandards.Where(s => s.responsibleAreaId == responsibleArea.id).ToListAsync();
+           
+            if (reportStandards == null || !reportStandards.Any())
+            {
+                return NotFound();
+            }
             //var mergedObject = Merger.Merge(reportItems, reportColumns);
             var dynamicObject = new
             {
                 reportColumns = reportColumns,
                 reportItems = reportItems,
-                monthlyBalance = monthlyBalance,
+                monthlyBalances = monthlyBalances,
                 reportStandards = reportStandards
             };
             return Ok(dynamicObject);
