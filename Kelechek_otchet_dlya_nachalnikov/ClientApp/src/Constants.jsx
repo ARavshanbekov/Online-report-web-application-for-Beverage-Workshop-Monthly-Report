@@ -41,8 +41,8 @@
     
 /* Tseh Termoplast */
     PathToTsehTermoplast: "/tsehTermoplast",
-    ResponsibleAreaNameOfTsehTermoplast: "ЦЕХ розлива №2",
-    TitleForTsehTermoplast: "Данные по ЦЕХ №2",
+    ResponsibleAreaNameOfTsehTermoplast: "Цех. Термопласт",
+    TitleForTsehTermoplast: "Данные по Цех Термопласт", 
     BalanceAtTheBeginningColumnOrderOfTsehTermoplast: 1,
     ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast: 2,
     ReturnFromTsehFirstColumnOrderOfTsehTermoplast: 3,
@@ -58,10 +58,11 @@
     ConsumptionInvoiceColumnOrderOfTsehTermoplast: 13,    
     ResidualBalanceColumnOrderOfTsehTermoplast: 14,
 
-    TitleForTsehTermoplast: "Данные по Цех Термопласт",    
-    ResponsibleAreaNameOfTsehTermoplast: "Цех. Термопласт",
+       
+    
     PathToReportsController: "/api/reports/",
-    PathToDetailedReportsController: "/api/DetailedReports/",
+    PathToReportDatasController: "/api/reportDatas/",
+    PathToDetailedReportsController: "/api/detailedReports/",
     PathToMonthlyBalancesController: "/api/monthlyBalances/",    
     LossValueColumnOrderOfTsehTermoplast: 17,
 
@@ -69,6 +70,14 @@
     permissionAdmin: "admin",
     //permissionWarehouseManager: "warehouseManager",
     permissionWarehouseManagerOfRawMaterialsAndSupplies: "WarehouseManagerOfRawMaterialsAndSupplies",
+
+/* text messages */
+    MessageIChecked: "Я проверел(а)",
+    MessageSaveChanges: "Сохранить Изменении",
+    MessageSave: "✓ Сохранить",
+    MessageCannotDisplayBlankForThisMonth: "Не может открыть бланку на этот месяц!",
+    MessageUpdatedSuccessfully: "Успешно обновлено",
+    MessageError: "Ошибка",
     
 };
 export { CONSTANTS };
