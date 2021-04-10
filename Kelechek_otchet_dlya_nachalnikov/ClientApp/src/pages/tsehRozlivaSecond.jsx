@@ -1,29 +1,27 @@
-﻿// in src/termoplastIVyduv.js
+﻿// in src/tsehRozlivaSecond.js
 import React from "react";
 import _uniqueId from 'lodash/uniqueId';
 import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './../css/custom.css';
 import {
     List,
     Datagrid,
-    EditButton,
     Edit,
-    SimpleForm,
-    TextInput,
     Create,
-    DateInput,
     TextField,
     DateField,
     ShowButton,
     Show,
     SimpleShowLayout,
-    BooleanField
+    BooleanField,
 } from 'react-admin';
 import axios from 'axios';
-import { Table, Row, Col, Container, Input, Form, Button } from 'reactstrap';
-import { CONSTANTS } from './../Constants.jsx';
+import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { CONSTANTS } from '../Constants.jsx';
 
 const CustomShowButton = ({ record }) => {
     return (
@@ -67,7 +65,7 @@ class MyCreateInputField extends React.Component {
         let newObj = {
             value: event.target.value,
             rowId: this.props.id,
-            colId: this.props.columnID,
+            colId: this.props.columnId,
             calculationSign: this.props.calculationSign
         }
         this.props.onValueChange(newObj);
@@ -76,7 +74,7 @@ class MyCreateInputField extends React.Component {
     render() {
         const idValue = this.props.id;
         return (
-            <Input type="number" style={{ padding: "0" }} id={idValue} value={this.state.value} onChange={this.handleChange} />
+            <Form.Control type="number" style={{ padding: "0" }} id={idValue} value={this.state.value} onChange={this.handleChange} />
         );
     }
 }
@@ -115,16 +113,12 @@ export class CreateInfo extends React.Component {
         this.handleDate = this.handleDate.bind(this);
     }
 
-    fillTableHead() {
-
-    }
-
     fillTableBody() {
-        let tbody = [];        
+        let tbody = [];
         let reportColumns = this.state.reportColumns;
         let reportItems = this.state.reportItems;
         let monthlyBalances = this.state.monthlyBalances;
-        let reportStandards = this.state.reportStandards;          
+        let reportStandards = this.state.reportStandards;
 
         for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
             let childrenTB = []
@@ -193,7 +187,7 @@ export class CreateInfo extends React.Component {
                         childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.SavingSumColumnOrderOfTsehRozlivaSecond]} onResultValueChange={this.handleResultValueChange} /></td>);
                         break;
                     } else if ((reportColumns[indexCount].order) == yCoordinatePosition) {
-                        childrenTB.push(<td /*style={{ paddingLeft: "0", paddingRight: "0" }}*/><MyCreateInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} calculationSign={reportColumns[yCoordinatePosition].calculationSign} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td /*style={{ paddingLeft: "0", paddingRight: "0" }}*/><MyCreateInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} calculationSign={reportColumns[yCoordinatePosition].calculationSign} onValueChange={this.handleValueChange} /></td>);
 
                         this.state.balanceCalculationSigns[xCoordinatePosition][yCoordinatePosition] = reportColumns[indexCount].calculationSign;
                         break;
@@ -228,6 +222,11 @@ export class CreateInfo extends React.Component {
             tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond];
         } else {
 
+        }
+
+        if (tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond] == 0 && tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] == 0) {
+            tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = 0;
+            tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = 0;
         }
 
         this.setState({
@@ -305,8 +304,8 @@ export class CreateInfo extends React.Component {
                         residualBalance: this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond],
                         date: reportDate,
                         order: xCoordinatePosition,
-                        reportItemID: reportItems[xCoordinatePosition].id,
-                        reportID: newStoredReportId,
+                        reportItemId: reportItems[xCoordinatePosition].id,
+                        reportId: newStoredReportId,
                         responsibleAreaId: monthlyBalances[0].responsibleAreaId
                     }
                     postMonthlyBalance.push(monthlyBalanceObject);
@@ -316,14 +315,14 @@ export class CreateInfo extends React.Component {
                     return axios.post(CONSTANTS.PathToMonthlyBalancesController, postMonthlyBalance);
                 }
                 function postDataFunc() {
-                    return axios.post('/api/reportDatas/', postData);
+                    return axios.post(CONSTANTS.PathToReportDatasController, postData);
                 }
 
                 Promise.all([postMonthlyBalanceFunc(), postDataFunc()])
                     .then(function (results) {
                         //let data = JSON.parse(JSON.stringify(results.data));
                         console.log("results", results);
-                        toast.success("Успешно сохранено", {
+                        toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                             position: "bottom-center",
                             autoClose: 5000,
                             hideProgressBar: true,
@@ -335,6 +334,15 @@ export class CreateInfo extends React.Component {
                         window.location.href = '../';
                     })
                     .catch(function (error) {
+                        toast.error(CONSTANTS.MessageError, {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
                         if (error.response) {
                             console.log("Error response: " + error.response);
                             //do something
@@ -352,6 +360,15 @@ export class CreateInfo extends React.Component {
                     });
             })
             .catch((error) => {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
@@ -384,17 +401,17 @@ export class CreateInfo extends React.Component {
 
         let userId = localStorage.getItem('id');
         let request = {
-            MemberID: parseInt(userId),
+            MemberId: parseInt(userId),
             Name: CONSTANTS.ResponsibleAreaNameOfTsehRozlivaSecond,
             Month: currentMonth
         };
         //console.log(' before request change: ' + request)
 
-        //console.log('MemberID: ' + request.MemberID)
+        //console.log('MemberId: ' + request.MemberId)
         //console.log('Name: ' + request.Name)
         //console.log(' after request change: ' + request)
         axios
-            .post("/api/DetailedReports/", request)
+            .post(CONSTANTS.PathToDetailedReportsController, request)
             .then(response => {
                 let data = JSON.parse(JSON.stringify(response.data));
                 //console.log(data);
@@ -495,7 +512,7 @@ export class CreateInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -520,7 +537,7 @@ export class CreateInfo extends React.Component {
     componentDidMount() {
         let userId = localStorage.getItem('id');
         let request = {
-            MemberID: parseInt(userId),
+            MemberId: parseInt(userId),
             Name: CONSTANTS.ResponsibleAreaNameOfTsehRozlivaSecond,
             Month: this.state.currentMonth
         };
@@ -530,7 +547,7 @@ export class CreateInfo extends React.Component {
         //console.log('Name: ' + request.Name)        
         //console.log(' after request change: ' + request)
         axios
-            .post("/api/DetailedReports/", request)
+            .post(CONSTANTS.PathToDetailedReportsController, request)
             .then(response => {
                 let data = JSON.parse(JSON.stringify(response.data));
                 //console.log(data);
@@ -620,7 +637,7 @@ export class CreateInfo extends React.Component {
 
                     let isApiReturnedData = true;
                     this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                    this.setState({ isApiReturnedData: isApiReturnedData });  
+                    this.setState({ isApiReturnedData: isApiReturnedData });
                 }
             })
             .catch((error) => {
@@ -629,7 +646,7 @@ export class CreateInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -710,7 +727,7 @@ export class CreateInfo extends React.Component {
                                 </tbody>
                             </Table>
                             <Button color="primary" size="lg" onClick={this.handleSubmit}>
-                                ✓ Сохранить
+                                {CONSTANTS.MessageSave}
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -747,7 +764,7 @@ class MyEditInputField extends React.Component {
         let newObj = {
             value: event.target.value,
             rowId: this.props.id,
-            colId: this.props.columnID,
+            colId: this.props.columnId,
             calculationSign: this.props.calculationSign
         }
         this.props.onValueChange(newObj);
@@ -756,7 +773,7 @@ class MyEditInputField extends React.Component {
     render() {
         const idValue = this.props.id;
         return (
-            <Input type="number" style={{ padding: "0" }} id={idValue} value={this.state.value} onChange={this.handleChange} />
+            <Form.Control type="number" style={{ padding: "0" }} id={idValue} value={this.state.value} onChange={this.handleChange} />
         );
     }
 }
@@ -794,8 +811,8 @@ export class EditInfo extends React.Component {
         let monthlyBalances = this.state.monthlyBalances;
         let reportDatas = this.state.reportDatas;
         let reportStandards = this.state.reportStandards;
-       
-        if (!this.state.isBodyFilled) {           
+
+        if (!this.state.isBodyFilled) {
             for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
                 let childrenTB = []
 
@@ -808,7 +825,7 @@ export class EditInfo extends React.Component {
 
                 this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond] = monthlyBalanceValue.initialBalance;
                 childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond]}</td>);
-                
+
 
                 for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
 
@@ -820,12 +837,12 @@ export class EditInfo extends React.Component {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond] = reportDataValue.data;
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order == CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond && yCoordinatePosition == CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond) {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] = reportDataValue.data;
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond) {
 
                         let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;
@@ -838,12 +855,12 @@ export class EditInfo extends React.Component {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond] = reportDataValue.data;
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order == CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond && yCoordinatePosition == CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond) {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond] = monthlyBalanceValue.residualBalance;
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order == yCoordinatePosition) {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = reportDataValue.data;
@@ -853,26 +870,26 @@ export class EditInfo extends React.Component {
                         console.log("Faillll")
                     }
                 }
-               
+
                 tbody.push(<tr>{childrenTB}</tr>)
-            }            
-            
-            
+            }
+
+
             this.state.isBodyFilled = true;
         } else {
 
             console.log("fillTableBody ");
-            
+
             for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
                 let childrenTB = []
 
                 let reportItemValue = reportItems.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === xCoordinatePosition);
                 //console.log("reportItemValue", reportItemValue);
                 //console.log("xCoordinatePosition", xCoordinatePosition);
-                
+
                 childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItemValue.name}</td>);
                 childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond]}</td>);
-               
+
                 for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
 
                     let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === yCoordinatePosition)
@@ -880,30 +897,30 @@ export class EditInfo extends React.Component {
                     if (reportColumnValue.order === CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond) {
 
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond) {
 
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond) {
-                        
+
                         childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond]} onResultValueChange={this.handleResultValueChange} /></td>);
-                        
+
                     } else if (reportColumnValue.order === CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond) {
-                                               
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond && yCoordinatePosition === CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond) {
 
-                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowID={xCoordinatePosition} columnID={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === yCoordinatePosition) {
 
                         childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} onResultValueChange={this.handleResultValueChange} /></td>);
 
                     } else {
                         console.log("Faillll");
-                    }                  
+                    }
                 }
-                
+
                 tbody.push(<tr>{childrenTB}</tr>)
             }
         }
@@ -949,8 +966,6 @@ export class EditInfo extends React.Component {
         this.setState({
             balanceOperationNumbers: tempArray
         })
-
-        //console.log("handleResultValueChange triggered");
     }
 
     handleSubmit(event) {
@@ -976,11 +991,11 @@ export class EditInfo extends React.Component {
                         id: monthlyBalances[indexCount].id,
                         memberId: monthlyBalances[indexCount].memberId,
                         initialBalance: monthlyBalances[indexCount].initialBalance,
-                        residualBalance: this.state.balanceOperationNumbers[xCoordinatePosition][this.state.balanceAtTheEndIndex],
+                        residualBalance: this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond],
                         date: monthlyBalances[indexCount].date,
                         order: monthlyBalances[indexCount].order,
-                        reportItemID: monthlyBalances[indexCount].reportItemID,
-                        reportID: monthlyBalances[indexCount].reportID,
+                        reportItemId: monthlyBalances[indexCount].reportItemId,
+                        reportId: monthlyBalances[indexCount].reportId,
                         responsibleAreaId: monthlyBalances[indexCount].responsibleAreaId
                     }
                     postMonthlyBalance.push(monthlyBalanceObject);
@@ -990,11 +1005,11 @@ export class EditInfo extends React.Component {
             }
 
             for (let j = 0; j < Object.keys(reportItems).length; j++) {
-                if ((reportItems[j].order - 1) == xCoordinatePosition) { // check for report row items consistency
+                if ((reportItems[j].order) == xCoordinatePosition) { // check for report row items consistency
 
-                    for (let yCoordinatePosition = 3; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
+                    for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
                         for (let reportColumnIdIndex = 0; reportColumnIdIndex < Object.keys(reportColumns).length; reportColumnIdIndex++) {
-                            if ((reportColumns[reportColumnIdIndex].order - 1) == yCoordinatePosition) {
+                            if ((reportColumns[reportColumnIdIndex].order) == yCoordinatePosition) {
                                 //console.log("reportColumns[reportColumnIdIndex].order - 1) == j ==> " + (reportColumns[reportColumnIdIndex].order - 1) + "==" + j)
 
                                 for (let reportDataXIndex = 0; reportDataXIndex < Object.keys(reportDatas).length; reportDataXIndex++) {
@@ -1019,37 +1034,24 @@ export class EditInfo extends React.Component {
                             }
                         }
                     }
-
-                    let sum = 0;
-                    for (let j = 2; j < this.state.balanceAtTheEndIndex; j++) {
-                        if (this.state.balanceCalculationSigns[xCoordinatePosition][j] === ("+").trim()) {
-                            sum += this.state.balanceOperationNumbers[xCoordinatePosition][j];
-                        } else if (this.state.balanceCalculationSigns[xCoordinatePosition][j] === ("-").trim()) {
-                            sum -= this.state.balanceOperationNumbers[xCoordinatePosition][j];
-                        } else {
-
-                        }
-                    }
-
-                    this.state.balanceOperationNumbers[xCoordinatePosition][this.state.balanceAtTheEndIndex] = sum;
                 }
             }
         }
 
         //console.table(this.state.balanceOperationNumbers);
-        function postMonthlyBalanceFunc() {
-            return axios.put('/api/monthlyBalances/', postMonthlyBalance);
+        function putMonthlyBalanceFunc() {
+            return axios.put(CONSTANTS.PathToMonthlyBalancesController, postMonthlyBalance);
         }
-        function postDataFunc() {
-            return axios.put('/api/reportDatas/', postData);
+        function putDataFunc() {
+            return axios.put(CONSTANTS.PathToReportDatasController, postData);
         }
 
-        Promise.all([postMonthlyBalanceFunc(), postDataFunc()])
+        Promise.all([putMonthlyBalanceFunc(), putDataFunc()])
             .then(function (results) {
                 //let data = JSON.parse(JSON.stringify(results.data));
                 //console.log(data);
 
-                toast.success("Успешно обновлено", {
+                toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                     position: "bottom-center",
                     autoClose: 5000,
                     hideProgressBar: true,
@@ -1061,6 +1063,15 @@ export class EditInfo extends React.Component {
                 window.location.href = '../';
             })
             .catch(function (error) {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
@@ -1082,7 +1093,7 @@ export class EditInfo extends React.Component {
 
         let reportId = parseInt(localStorage.getItem('reportId'));
         axios
-            .get('/api/DetailedReports/' + reportId)
+            .get(CONSTANTS.PathToDetailedReportsController + reportId)
             .then(response => {
                 if (!this.state.isApiReturnedData) {
                     let data = JSON.parse(JSON.stringify(response.data));
@@ -1179,7 +1190,7 @@ export class EditInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -1233,8 +1244,8 @@ export class EditInfo extends React.Component {
                                     {this.fillTableBody()}
                                 </tbody>
                             </Table>
-                            <Button color="primary" size="lg" >
-                                <span aria-hidden>&#10003; Сохранить Изменении</span>
+                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -1269,10 +1280,12 @@ export class ShowInfo extends React.Component {
             isApiReturnedData: false,
             apiStatus: "Загрузка",
             currentMonth: ((new Date).getMonth() + 1),
-            isBodyFilled: false
+            isBodyFilled: false,
+            reportStatus: false
         };
 
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResultValueChange = this.handleResultValueChange.bind(this);
     }
 
@@ -1331,28 +1344,10 @@ export class ShowInfo extends React.Component {
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
         tempArray[targetRowId][targetColId] = parseInt(target.value);
-        let sum = 0;
-        for (let xCoordinatePosition = 1; xCoordinatePosition < this.state.balanceAtTheEndIndex; xCoordinatePosition++) {
-            if (this.state.balanceCalculationSigns[targetRowId][xCoordinatePosition] === "+") {
-                //console.log("inside sign + : ")
-                sum += tempArray[targetRowId][xCoordinatePosition];
-            } else if (this.state.balanceCalculationSigns[targetRowId][xCoordinatePosition] === "-") {
-                //console.log("inside sign - : ")
-                sum -= tempArray[targetRowId][xCoordinatePosition];
-            } else {
-                //console.log("inside sign else state : ")
-            }
-
-        }
-
-        //console.log("sum: " + sum)
-        tempArray[targetRowId][this.state.balanceAtTheEndIndex] = sum;
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
 
         this.setState({
             balanceOperationNumbers: tempArray
         })
-        console.log(this.state.balanceOperationNumbers[targetRowId][targetColId]);
     }
 
     handleResultValueChange(target) {
@@ -1366,11 +1361,72 @@ export class ShowInfo extends React.Component {
         //console.log("handleResultValueChange triggered");
     }
 
+    handleSubmit = (event) => {
+        event.preventDefault();
+        let reportColumns = this.state.reportColumns;
+        let reportItems = this.state.reportItems;
+        let monthlyBalances = this.state.monthlyBalances;
+        let postData = [];
+        let postMonthlyBalance = [];
+        let currentMonth = this.state.currentMonth - 1;
+        let report = this.state.report;
+        let reportDate = new Date((new Date).setMonth(currentMonth));
+
+        console.log("this.state.currentMonth", this.state.currentMonth);
+        let userId = localStorage.getItem('id');
+        //create table heads        
+        //console.log                
+
+        let postReport = report;
+        postReport.status = this.state.reportStatus;
+
+        console.log("postReport", postReport)
+        axios
+            .put(CONSTANTS.PathToReportsController + JSON.stringify(postReport.id), postReport)
+            .then(function (results) {
+                toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                window.location.href = '../';
+            })
+            .catch((error) => {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                if (error.response) {
+                    console.log("Error response: " + error.response);
+                    //do something
+
+                } else if (error.request) {
+                    console.log("Error request: " + error.request);
+                    //do something else
+
+                } else if (error.message) {
+                    console.log("Error message: " + error.message);
+                    //do something other than the other two
+
+                }
+
+            });
+    }
+
     componentDidMount() {
 
         let reportId = parseInt(localStorage.getItem('reportId'));
         axios
-            .get('/api/DetailedReports/' + reportId)
+            .get(CONSTANTS.PathToDetailedReportsController + reportId)
             .then(response => {
                 if (!this.state.isApiReturnedData) {
                     let data = JSON.parse(JSON.stringify(response.data));
@@ -1463,7 +1519,10 @@ export class ShowInfo extends React.Component {
 
                         let isApiReturnedData = true;
                         this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                        this.setState({ isApiReturnedData: isApiReturnedData });
+                        this.setState({
+                            isApiReturnedData: isApiReturnedData,
+                            reportStatus: data.report.status
+                        });
                     }
                 }
             })
@@ -1473,7 +1532,7 @@ export class ShowInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -1502,6 +1561,20 @@ export class ShowInfo extends React.Component {
         //    position: 'sticky',            
         //    top: 0
         //};        
+        //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+
+        const onSwitchAction = () => {
+            if (this.state.reportStatus) {
+                this.setState({
+                    reportStatus: false
+                })
+            } else {
+                this.setState({
+                    reportStatus: true
+                })
+            }
+            console.log(this.state.reportStatus);
+        };
 
         if (!this.state.isApiReturnedData) {
             return (
@@ -1510,7 +1583,6 @@ export class ShowInfo extends React.Component {
                         <span>{this.state.apiStatus}</span>
                     </Container>
                 </Row>);
-
         }
 
         return (
@@ -1532,7 +1604,27 @@ export class ShowInfo extends React.Component {
                                 </tbody>
                             </Table>
                         </Col>
+
                     </SimpleShowLayout >
+                    <Form>
+
+                        <FormControlLabel
+                            control={<Switch
+                                checked={this.state.reportStatus}
+                                onChange={onSwitchAction}
+                                color="primary"
+                                name="checkedB"
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                            />}
+                            label={CONSTANTS.MessageIChecked}
+                        />
+                        <div>
+                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                            </Button>
+                        </div>
+                    </Form>
+                    <ToastContainer />
                 </Row>
             </Container>
         )

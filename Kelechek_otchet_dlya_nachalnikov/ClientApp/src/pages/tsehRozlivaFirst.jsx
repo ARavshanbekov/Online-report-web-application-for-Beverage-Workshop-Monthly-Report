@@ -9,20 +9,16 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './../css/custom.css';
 import {
     List,
-    Datagrid,
-    EditButton,
+    Datagrid, 
     Edit,
-    SimpleForm,
-    TextInput,
-    Create,
-    DateInput,
+    Create,    
     TextField,
     DateField,
     ShowButton,
     Show,
     SimpleShowLayout,
-    BooleanField,
-    BooleanInput
+    BooleanField,    
+    usePermissions
 } from 'react-admin';
 import axios from 'axios';
 import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
@@ -116,10 +112,6 @@ export class CreateInfo extends React.Component {
         this.handleResultValueChange = this.handleResultValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDate = this.handleDate.bind(this);
-    }
-
-    fillTableHead() {
-
     }
 
     fillTableBody() {
@@ -324,14 +316,14 @@ export class CreateInfo extends React.Component {
                     return axios.post(CONSTANTS.PathToMonthlyBalancesController, postMonthlyBalance);
                 }
                 function postDataFunc() {
-                    return axios.post('/api/reportDatas/', postData);
+                    return axios.post(CONSTANTS.PathToReportDatasController, postData);
                 }
 
                 Promise.all([postMonthlyBalanceFunc(), postDataFunc()])
                     .then(function (results) {
                         //let data = JSON.parse(JSON.stringify(results.data));
                         console.log("results", results);
-                        toast.success("Успешно сохранено", {
+                        toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                             position: "bottom-center",
                             autoClose: 5000,
                             hideProgressBar: true,
@@ -343,6 +335,15 @@ export class CreateInfo extends React.Component {
                         window.location.href = '../';
                     })
                     .catch(function (error) {
+                        toast.error(CONSTANTS.MessageError, {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
                         if (error.response) {
                             console.log("Error response: " + error.response);
                             //do something
@@ -360,6 +361,15 @@ export class CreateInfo extends React.Component {
                     });
             })
             .catch((error) => {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
@@ -402,7 +412,7 @@ export class CreateInfo extends React.Component {
         //console.log('Name: ' + request.Name)
         //console.log(' after request change: ' + request)
         axios
-            .post("/api/DetailedReports/", request)
+            .post(CONSTANTS.PathToDetailedReportsController, request)
             .then(response => {
                 let data = JSON.parse(JSON.stringify(response.data));
                 //console.log(data);
@@ -503,7 +513,7 @@ export class CreateInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -538,7 +548,7 @@ export class CreateInfo extends React.Component {
         //console.log('Name: ' + request.Name)        
         //console.log(' after request change: ' + request)
         axios
-            .post("/api/DetailedReports/", request)
+            .post(CONSTANTS.PathToDetailedReportsController, request)
             .then(response => {
                 let data = JSON.parse(JSON.stringify(response.data));
                 //console.log(data);
@@ -637,7 +647,7 @@ export class CreateInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -718,7 +728,7 @@ export class CreateInfo extends React.Component {
                                 </tbody>
                             </Table>
                             <Button color="primary" size="lg" onClick={this.handleSubmit}>
-                                ✓ Сохранить
+                                {CONSTANTS.MessageSave}
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -957,8 +967,6 @@ export class EditInfo extends React.Component {
         this.setState({
             balanceOperationNumbers: tempArray
         })
-
-        //console.log("handleResultValueChange triggered");
     }
 
     handleSubmit(event) {
@@ -1033,10 +1041,10 @@ export class EditInfo extends React.Component {
 
         //console.table(this.state.balanceOperationNumbers);
         function putMonthlyBalanceFunc() {
-            return axios.put('/api/monthlyBalances/', postMonthlyBalance);
+            return axios.put(CONSTANTS.PathToMonthlyBalancesController, postMonthlyBalance);
         }
         function putDataFunc() {
-            return axios.put('/api/reportDatas/', postData);
+            return axios.put(CONSTANTS.PathToReportDatasController, postData);
         }
 
         Promise.all([putMonthlyBalanceFunc(), putDataFunc()])
@@ -1044,7 +1052,7 @@ export class EditInfo extends React.Component {
                 //let data = JSON.parse(JSON.stringify(results.data));
                 //console.log(data);
 
-                toast.success("Успешно обновлено", {
+                toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                     position: "bottom-center",
                     autoClose: 5000,
                     hideProgressBar: true,
@@ -1056,6 +1064,15 @@ export class EditInfo extends React.Component {
                 window.location.href = '../';
             })
             .catch(function (error) {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
@@ -1077,7 +1094,7 @@ export class EditInfo extends React.Component {
 
         let reportId = parseInt(localStorage.getItem('reportId'));
         axios
-            .get('/api/DetailedReports/' + reportId)
+            .get(CONSTANTS.PathToDetailedReportsController + reportId)
             .then(response => {
                 if (!this.state.isApiReturnedData) {
                     let data = JSON.parse(JSON.stringify(response.data));
@@ -1174,7 +1191,7 @@ export class EditInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -1229,7 +1246,7 @@ export class EditInfo extends React.Component {
                                 </tbody>
                             </Table>
                             <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; Сохранить Изменении</span>
+                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -1240,10 +1257,10 @@ export class EditInfo extends React.Component {
     }
 }
 
-export const ShowTsehRozlivaFirst = props => {
+export const ShowTsehRozlivaFirst = ({ permissions, ...props }) => {
     return (
         <Show {...props} >
-            <ShowInfo />
+            <ShowInfo {...props} />
         </Show>
     );
 }
@@ -1327,29 +1344,11 @@ export class ShowInfo extends React.Component {
         let targetRowId = target.rowId;
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
-        let sum = 0;
-        for (let xCoordinatePosition = 1; xCoordinatePosition < this.state.balanceAtTheEndIndex; xCoordinatePosition++) {
-            if (this.state.balanceCalculationSigns[targetRowId][xCoordinatePosition] === "+") {
-                //console.log("inside sign + : ")
-                sum += tempArray[targetRowId][xCoordinatePosition];
-            } else if (this.state.balanceCalculationSigns[targetRowId][xCoordinatePosition] === "-") {
-                //console.log("inside sign - : ")
-                sum -= tempArray[targetRowId][xCoordinatePosition];
-            } else {
-                //console.log("inside sign else state : ")
-            }
-
-        }
-
-        //console.log("sum: " + sum)
-        tempArray[targetRowId][this.state.balanceAtTheEndIndex] = sum;
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
-
+        tempArray[targetRowId][targetColId] = parseInt(target.value);        
+      
         this.setState({
             balanceOperationNumbers: tempArray
-        })
-        console.log(this.state.balanceOperationNumbers[targetRowId][targetColId]);
+        })        
     }
 
     handleResultValueChange(target) {
@@ -1385,8 +1384,8 @@ export class ShowInfo extends React.Component {
         console.log("postReport", postReport)
         axios
             .put(CONSTANTS.PathToReportsController + JSON.stringify(postReport.id), postReport)
-            .then(function (results) {                                
-                toast.success("Успешно сохранено", {
+            .then(function (results) {
+                toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                     position: "bottom-center",
                     autoClose: 5000,
                     hideProgressBar: true,
@@ -1398,6 +1397,15 @@ export class ShowInfo extends React.Component {
                 window.location.href = '../';
             })
             .catch((error) => {
+                toast.error(CONSTANTS.MessageError, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 if (error.response) {
                     console.log("Error response: " + error.response);
                     //do something
@@ -1419,7 +1427,7 @@ export class ShowInfo extends React.Component {
 
         let reportId = parseInt(localStorage.getItem('reportId'));
         axios
-            .get('/api/DetailedReports/' + reportId)
+            .get(CONSTANTS.PathToDetailedReportsController + reportId)
             .then(response => {
                 if (!this.state.isApiReturnedData) {
                     let data = JSON.parse(JSON.stringify(response.data));
@@ -1525,7 +1533,7 @@ export class ShowInfo extends React.Component {
                     //do something
 
                     this.setState({
-                        apiStatus: "Не может открыть бланку на этот месяц!",
+                        apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
                         reportItems: [],
                         reportColumns: [],
                         thead: [],
@@ -1548,13 +1556,7 @@ export class ShowInfo extends React.Component {
     }
 
     render() {
-        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
-        //const divStyle = {
-        //    color: 'blue',
-        //    position: 'sticky',            
-        //    top: 0
-        //};        
-        //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']        
 
         const onSwitchAction = () => {
             if (this.state.reportStatus) {
@@ -1599,8 +1601,7 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    <Form>                        
-                        
+                    <Form>
                         <FormControlLabel
                             control={<Switch
                                 checked={this.state.reportStatus}
@@ -1609,11 +1610,11 @@ export class ShowInfo extends React.Component {
                                 name="checkedB"
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
                             />}
-                            label="Я проверел(а)"
+                            label={CONSTANTS.MessageIChecked}
                         />
                         <div>
                             <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; Сохранить Изменении</span>
+                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
                             </Button>
                         </div>
                     </Form>
