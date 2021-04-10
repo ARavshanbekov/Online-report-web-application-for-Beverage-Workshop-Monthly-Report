@@ -50,28 +50,30 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
         // PUT: api/Reports/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut]
-        public async Task<IActionResult> PutReport(List<Report> reports)
-        {            
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutReport(int id, Report report)
+        {
 
-            foreach(Report report in reports)
+            if (id != report.id)
             {
-                _context.Entry(report).State = EntityState.Modified;
+                return BadRequest();
+            }
 
-                try
+            _context.Entry(report).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReportExists(id))
                 {
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ReportExists(report.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
 

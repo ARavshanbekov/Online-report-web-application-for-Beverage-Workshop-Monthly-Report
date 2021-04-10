@@ -4,6 +4,8 @@ import _uniqueId from 'lodash/uniqueId';
 import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Switch from '@material-ui/core/Switch'; 
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './../css/custom.css';
 import {
     List,
@@ -1030,15 +1032,15 @@ export class EditInfo extends React.Component {
         }
 
         //console.table(this.state.balanceOperationNumbers);
-        function postMonthlyBalanceFunc() {
+        function putMonthlyBalanceFunc() {
             return axios.put('/api/monthlyBalances/', postMonthlyBalance);
         }
-        function postDataFunc() {
+        function putDataFunc() {
             return axios.put('/api/reportDatas/', postData);
         }
 
-        Promise.all([postMonthlyBalanceFunc(), postDataFunc()])
-            .then(response => {
+        Promise.all([putMonthlyBalanceFunc(), putDataFunc()])
+            .then(function (results) {
                 //let data = JSON.parse(JSON.stringify(results.data));
                 //console.log(data);
 
@@ -1226,7 +1228,7 @@ export class EditInfo extends React.Component {
                                     {this.fillTableBody()}
                                 </tbody>
                             </Table>
-                            <Button color="primary" size="lg" >
+                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
                                 <span aria-hidden>&#10003; Сохранить Изменении</span>
                             </Button>
                             <ToastContainer />
@@ -1262,10 +1264,12 @@ export class ShowInfo extends React.Component {
             isApiReturnedData: false,
             apiStatus: "Загрузка",
             currentMonth: ((new Date).getMonth() + 1),
-            isBodyFilled: false           
+            isBodyFilled: false,
+            reportStatus: false
         };
 
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResultValueChange = this.handleResultValueChange.bind(this);
     }
 
@@ -1357,6 +1361,58 @@ export class ShowInfo extends React.Component {
         })
 
         //console.log("handleResultValueChange triggered");
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        let reportColumns = this.state.reportColumns;
+        let reportItems = this.state.reportItems;
+        let monthlyBalances = this.state.monthlyBalances;
+        let postData = [];
+        let postMonthlyBalance = [];
+        let currentMonth = this.state.currentMonth - 1;
+        let report = this.state.report;
+        let reportDate = new Date((new Date).setMonth(currentMonth));
+
+        console.log("this.state.currentMonth", this.state.currentMonth);
+        let userId = localStorage.getItem('id');
+        //create table heads        
+        //console.log                
+
+        let postReport = report;
+        postReport.status = this.state.reportStatus;
+
+        console.log("postReport", postReport)
+        axios
+            .put(CONSTANTS.PathToReportsController + JSON.stringify(postReport.id), postReport)
+            .then(function (results) {                                
+                toast.success("Успешно сохранено", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                window.location.href = '../';
+            })
+            .catch((error) => {
+                if (error.response) {
+                    console.log("Error response: " + error.response);
+                    //do something
+
+                } else if (error.request) {
+                    console.log("Error request: " + error.request);
+                    //do something else
+
+                } else if (error.message) {
+                    console.log("Error message: " + error.message);
+                    //do something other than the other two
+
+                }
+
+            });
     }
 
     componentDidMount() {
@@ -1456,7 +1512,10 @@ export class ShowInfo extends React.Component {
 
                         let isApiReturnedData = true;
                         this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                        this.setState({ isApiReturnedData: isApiReturnedData });
+                        this.setState({
+                            isApiReturnedData: isApiReturnedData,
+                            reportStatus: data.report.status
+                        });
                     }
                 }
             })
@@ -1497,9 +1556,18 @@ export class ShowInfo extends React.Component {
         //};        
         //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 
-        //const onSwitchAction = () => {
-        //    setIsSwitchOn(!isSwitchOn);
-        //};
+        const onSwitchAction = () => {
+            if (this.state.reportStatus) {
+                this.setState({
+                    reportStatus: false
+                })                
+            } else {
+                this.setState({
+                    reportStatus: true
+                })
+            }
+            console.log(this.state.reportStatus);
+        };
 
         if (!this.state.isApiReturnedData) {
             return (
@@ -1531,14 +1599,25 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    <Form>
-                        <Form.Switch
-                            //onChange={onSwitchAction}
-                            id="custom-switch"
+                    <Form>                        
+                        
+                        <FormControlLabel
+                            control={<Switch
+                                checked={this.state.reportStatus}
+                                onChange={onSwitchAction}
+                                color="primary"
+                                name="checkedB"
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                            />}
                             label="Я проверел(а)"
-                            //checked={isSwitchOn}                            
                         />
+                        <div>
+                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                <span aria-hidden>&#10003; Сохранить Изменении</span>
+                            </Button>
+                        </div>
                     </Form>
+                    <ToastContainer />
                 </Row>
             </Container>
         )
