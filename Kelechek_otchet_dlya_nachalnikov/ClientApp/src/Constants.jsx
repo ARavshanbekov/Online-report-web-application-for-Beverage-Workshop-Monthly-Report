@@ -39,32 +39,36 @@
     SavingSumColumnOrderOfTsehRozlivaFirst: 12,
     ResidualBalanceColumnOrderOfTsehRozlivaFirst: 13,
     
-/* Tseh Termoplast */
+    /* Tseh Termoplast */
     PathToTsehTermoplast: "/tsehTermoplast",
     ResponsibleAreaNameOfTsehTermoplast: "Цех. Термопласт",
     TitleForTsehTermoplast: "Данные по Цех Термопласт", 
     BalanceAtTheBeginningColumnOrderOfTsehTermoplast: 1,
     ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast: 2,
+    ReturnColumnOrderOfTsehTermoplast: 3,
     ReturnFromTsehFirstColumnOrderOfTsehTermoplast: 3,
     ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast: 4,
     ReturnFromTsehSecondColumnOrderOfTsehTermoplast: 5,
     ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast: 6,
     ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast: 7,
-    TotalArrivalExpenseColumnOrderOfTsehTermoplast: 8,
-    СonsumptionVyduvColumnOrderOfTsehTermoplast: 9,
-    СonsumptionTsehFirstColumnOrderOfTsehTermoplast: 10,
-    ConsumptionCrushedColumnOrderOfTsehTermoplast: 11,
-    LossValueColumnOrderOfTsehTermoplast: 12,
-    ConsumptionInvoiceColumnOrderOfTsehTermoplast: 13,    
-    ResidualBalanceColumnOrderOfTsehTermoplast: 14,
+    ReceiveWithInvoiceColumnOrderOfTsehTermoplast: 8,
+    TotalArrivalColumnOrderOfTsehTermoplast: 9,
+    ExpenseColumnOrderOfTsehTermoplast: 10,
+    ExpenseVyduvColumnOrderOfTsehTermoplast: 10,
+    ExpenseTsehFirstColumnOrderOfTsehTermoplast: 11,
+    ExpenseTsehSecondColumnOrderOfTsehTermoplast: 12,
+    ExpenseCrushedColumnOrderOfTsehTermoplast: 13,
+    LossValueColumnOrderOfTsehTermoplast: 14,
+    ExpenseWithInvoiceColumnOrderOfTsehTermoplast: 15,  
+    TotalExpenceColumnOrderOfTsehTermoplast: 16,
+    ResidualBalanceColumnOrderOfTsehTermoplast: 17,
 
        
     
     PathToReportsController: "/api/reports/",
     PathToReportDatasController: "/api/reportDatas/",
     PathToDetailedReportsController: "/api/detailedReports/",
-    PathToMonthlyBalancesController: "/api/monthlyBalances/",    
-    LossValueColumnOrderOfTsehTermoplast: 17,
+    PathToMonthlyBalancesController: "/api/monthlyBalances/",        
 
 /* Permissions */
     permissionAdmin: "admin",

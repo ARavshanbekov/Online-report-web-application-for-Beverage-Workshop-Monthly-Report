@@ -18,7 +18,7 @@ import {
     Show,
     SimpleShowLayout,
     BooleanField,    
-    usePermissions
+    usePermissions    
 } from 'react-admin';
 import axios from 'axios';
 import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
@@ -32,10 +32,11 @@ const CustomShowButton = ({ record }) => {
     )
 }
 
+
 export const ListTsehRozlivaFirst = props => (
-    <List {...props}>
+    <List {...props} title={CONSTANTS.TitleForTsehRozlivaFirst}>        
         <Datagrid>
-            <DateField source="date" label="Дата" />
+            <DateField source="date" label="Дата" options={{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }} locales="ru" />
             <TextField source="title" label="Заглавие" />
             <BooleanField source="status" label="Статус" valueLabelTrue="Проверено" valueLabelFalse="В ожидании" />
             <CustomShowButton />
@@ -44,7 +45,7 @@ export const ListTsehRozlivaFirst = props => (
 );
 
 export const CreateTsehRozlivaFirst = props => (
-    <Create {...props}>
+    <Create {...props} title={CONSTANTS.TitleForTsehRozlivaFirst}>
         <CreateInfo />
     </Create>
 );
@@ -742,7 +743,7 @@ export class CreateInfo extends React.Component {
 export const EditTsehRozlivaFirst = props => {
 
     return (
-        <Edit {...props} >
+        <Edit {...props} title={CONSTANTS.TitleForTsehRozlivaFirst} >
             <EditInfo />
         </Edit>
     );
@@ -1259,8 +1260,8 @@ export class EditInfo extends React.Component {
 
 export const ShowTsehRozlivaFirst = ({ permissions, ...props }) => {
     return (
-        <Show {...props} >
-            <ShowInfo {...props} />
+        <Show {...props} title={CONSTANTS.TitleForTsehRozlivaFirst} >
+            <ShowInfo {...props} permissions={permissions} />
         </Show>
     );
 }
@@ -1467,10 +1468,7 @@ export class ShowInfo extends React.Component {
                                             </thead>
                                         </table>
                                     </td>);
-                                    j = j + 1
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
+                                    j = j + 1                                    
                                     break;
                                 } else if ((reportColumns[indexCount].order) == CONSTANTS.SavingColumnOrderOfTsehRozlivaFirst && CONSTANTS.SavingColumnOrderOfTsehRozlivaFirst == j) {
                                     console.log("CONSTANTS.CONSTANTS.SavingColumnOrderOfTsehRozlivaFirst " + (reportColumns[indexCount].order) + "==" + CONSTANTS.SavingColumnOrderOfTsehRozlivaFirst);
@@ -1487,10 +1485,7 @@ export class ShowInfo extends React.Component {
                                             </thead>
                                         </table>
                                     </td>);
-                                    j = j + 1
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
+                                    j = j + 1                                    
                                     break;
                                 } else if ((reportColumns[indexCount].order) == j) {
                                     console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
@@ -1601,23 +1596,28 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    <Form>
-                        <FormControlLabel
-                            control={<Switch
-                                checked={this.state.reportStatus}
-                                onChange={onSwitchAction}
-                                color="primary"
-                                name="checkedB"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                            />}
-                            label={CONSTANTS.MessageIChecked}
-                        />
-                        <div>
-                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
-                            </Button>
-                        </div>
-                    </Form>
+                    {this.props.permissions == "chiefAccountant" &&
+                        <Container fluid>
+                            <Form>
+                                <FormControlLabel
+                                    control={<Switch
+                                        checked={this.state.reportStatus}
+                                        onChange={onSwitchAction}
+                                        color="primary"
+                                        name="checkedB"
+                                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                                    />}
+                                    label={CONSTANTS.MessageIChecked}
+                                />
+                                <div>
+                                    <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                        <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Container>
+                    }
+                    
                     <ToastContainer />
                 </Row>
             </Container>

@@ -18,6 +18,7 @@ import {
     Show,
     SimpleShowLayout,
     BooleanField,
+    usePermissions
 } from 'react-admin';
 import axios from 'axios';
 import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
@@ -31,10 +32,11 @@ const CustomShowButton = ({ record }) => {
     )
 }
 
+
 export const ListTsehRozlivaSecond = props => (
-    <List {...props}>
+    <List {...props} title={CONSTANTS.TitleForTsehRozlivaSecond}>
         <Datagrid>
-            <DateField source="date" label="Дата" />
+            <DateField source="date" label="Дата" options={{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }} locales="ru" />
             <TextField source="title" label="Заглавие" />
             <BooleanField source="status" label="Статус" valueLabelTrue="Проверено" valueLabelFalse="В ожидании" />
             <CustomShowButton />
@@ -43,7 +45,7 @@ export const ListTsehRozlivaSecond = props => (
 );
 
 export const CreateTsehRozlivaSecond = props => (
-    <Create {...props}>
+    <Create {...props} title={CONSTANTS.TitleForTsehRozlivaSecond}>
         <CreateInfo />
     </Create>
 );
@@ -741,7 +743,7 @@ export class CreateInfo extends React.Component {
 export const EditTsehRozlivaSecond = props => {
 
     return (
-        <Edit {...props} >
+        <Edit {...props} title={CONSTANTS.TitleForTsehRozlivaSecond} >
             <EditInfo />
         </Edit>
     );
@@ -1256,10 +1258,10 @@ export class EditInfo extends React.Component {
     }
 }
 
-export const ShowTsehRozlivaSecond = props => {
+export const ShowTsehRozlivaSecond = ({ permissions, ...props }) => {
     return (
-        <Show {...props} >
-            <ShowInfo />
+        <Show {...props} title={CONSTANTS.TitleForTsehRozlivaSecond} >
+            <ShowInfo {...props} permissions={permissions} />
         </Show>
     );
 }
@@ -1467,9 +1469,6 @@ export class ShowInfo extends React.Component {
                                         </table>
                                     </td>);
                                     j = j + 1
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
                                     break;
                                 } else if ((reportColumns[indexCount].order) == CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond && CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond == j) {
                                     console.log("CONSTANTS.CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond " + (reportColumns[indexCount].order) + "==" + CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond);
@@ -1487,9 +1486,6 @@ export class ShowInfo extends React.Component {
                                         </table>
                                     </td>);
                                     j = j + 1
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
                                     break;
                                 } else if ((reportColumns[indexCount].order) == j) {
                                     console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
@@ -1556,12 +1552,6 @@ export class ShowInfo extends React.Component {
 
     render() {
         const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
-        //const divStyle = {
-        //    color: 'blue',
-        //    position: 'sticky',            
-        //    top: 0
-        //};        
-        //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 
         const onSwitchAction = () => {
             if (this.state.reportStatus) {
@@ -1606,24 +1596,28 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    <Form>
+                    {this.props.permissions == "chiefAccountant" &&
+                        <Container fluid>
+                            <Form>
+                                <FormControlLabel
+                                    control={<Switch
+                                        checked={this.state.reportStatus}
+                                        onChange={onSwitchAction}
+                                        color="primary"
+                                        name="checkedB"
+                                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                                    />}
+                                    label={CONSTANTS.MessageIChecked}
+                                />
+                                <div>
+                                    <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                        <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Container>
+                    }
 
-                        <FormControlLabel
-                            control={<Switch
-                                checked={this.state.reportStatus}
-                                onChange={onSwitchAction}
-                                color="primary"
-                                name="checkedB"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                            />}
-                            label={CONSTANTS.MessageIChecked}
-                        />
-                        <div>
-                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
-                            </Button>
-                        </div>
-                    </Form>
                     <ToastContainer />
                 </Row>
             </Container>
