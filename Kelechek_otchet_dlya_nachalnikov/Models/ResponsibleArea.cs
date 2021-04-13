@@ -10,8 +10,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public int id { get; set; }
         public int memberId { get; set; }
         public String name { get; set; }
-        
-        //public Member Member { get; set; }
-        //public ICollection<Report> Reports { get; set; }
     }
 }

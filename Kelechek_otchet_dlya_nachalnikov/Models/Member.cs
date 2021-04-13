@@ -16,7 +16,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public String token { get; set; }
         public String memberType { get; set; }
 
-        //public ICollection<ResponsibleArea> ResponsibleAreas { get; set; }
-
     }
 }

@@ -44,7 +44,7 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             if (report == null)
             {
                 return NotFound();
-            }
+            }            
 
             var reportMonth = report.date.Month;
             var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == report.responsibleAreaId).ToListAsync();

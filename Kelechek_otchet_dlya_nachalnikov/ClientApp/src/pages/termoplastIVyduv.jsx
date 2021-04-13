@@ -992,59 +992,71 @@ export class EditInfo extends React.Component {
                     var data = JSON.parse(JSON.stringify(response.data));
                     console.log("data received: " + data);
 
-                    if (data.monthlyBalance.length > 0) {                        
-                        let reportColumns = data.reportColumns;
-                        let reportItems = data.reportItems;
-                        let monthlyBalance = data.monthlyBalance;
+                    if (data.report.status) {
+                        this.setState({
+                            apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
+                            reportItems: [],
+                            reportColumns: [],
+                            thead: [],
+                            isApiReturnedData: false,
+                            balanceOperationNumbers: [],
+                            balanceCalculationSigns: []
+                        });
+                    } else {
+                        if (data.monthlyBalance.length > 0) {
+                            let reportColumns = data.reportColumns;
+                            let reportItems = data.reportItems;
+                            let monthlyBalance = data.monthlyBalance;
 
-                        
-                        let currentReportMonth = new Date(monthlyBalance.date).getMonth() + 1
-                        this.setState({                            
-                            reportColumns: data.reportColumns,
-                            reportItems: data.reportItems,
-                            monthlyBalance: data.monthlyBalance,
-                            reportData: data.reportData,
-                            currentMonth: currentReportMonth
-                        })
 
-                        
-                        
-                        //console.log(JSON.stringify(data[0].name));
+                            let currentReportMonth = new Date(monthlyBalance.date).getMonth() + 1
+                            this.setState({
+                                reportColumns: data.reportColumns,
+                                reportItems: data.reportItems,
+                                monthlyBalance: data.monthlyBalance,
+                                reportData: data.reportData,
+                                currentMonth: currentReportMonth
+                            })
 
-                        let childrenTH = []
-                        //create table heads
-                        for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                            for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                                if ((reportColumns[indexCount].order - 1) == j) {
-                                    //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
-                                    let as = reportColumns[indexCount].name;
-                                    childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                    break;
+
+
+                            //console.log(JSON.stringify(data[0].name));
+
+                            let childrenTH = []
+                            //create table heads
+                            for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                                for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
+                                    if ((reportColumns[indexCount].order - 1) == j) {
+                                        //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + j);
+                                        let as = reportColumns[indexCount].name;
+                                        childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        this.state.thead.push(<tr>{childrenTH}</tr>);
+                            this.state.thead.push(<tr>{childrenTH}</tr>);
 
-                        let totalColumnNumber = Object.keys(reportColumns).length;
-                        for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
+                            let totalColumnNumber = Object.keys(reportColumns).length;
+                            for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
 
-                            //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
-                            this.state.balanceOperationNumbers.push([totalColumnNumber]);
-                            this.state.balanceCalculationSigns.push([totalColumnNumber]);
+                                //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
+                                this.state.balanceOperationNumbers.push([totalColumnNumber]);
+                                this.state.balanceCalculationSigns.push([totalColumnNumber]);
 
-                            for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                                this.state.balanceOperationNumbers[xCoordinatePosition][j] = 0;
-                                this.state.balanceCalculationSigns[xCoordinatePosition][j] = "0";
+                                for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                                    this.state.balanceOperationNumbers[xCoordinatePosition][j] = 0;
+                                    this.state.balanceCalculationSigns[xCoordinatePosition][j] = "0";
+                                }
                             }
-                        }
 
-                        let isApiReturnedData = true;
-                        this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                        this.setState({ isApiReturnedData: isApiReturnedData });
-                        //console.log("Object.keys(data.reportColumns).length - 1: " + Object.keys(reportColumns).length);
-                        //console.log("balanceAtTheEndIndex: " + this.state.balanceAtTheEndIndex);    
-                    }
+                            let isApiReturnedData = true;
+                            this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
+                            this.setState({ isApiReturnedData: isApiReturnedData });
+                            //console.log("Object.keys(data.reportColumns).length - 1: " + Object.keys(reportColumns).length);
+                            //console.log("balanceAtTheEndIndex: " + this.state.balanceAtTheEndIndex);    
+                        }
+                    }                    
                 }                
             })
             .catch((error) => {

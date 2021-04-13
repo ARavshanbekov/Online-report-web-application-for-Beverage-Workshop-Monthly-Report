@@ -66,14 +66,19 @@
        
     
     PathToReportsController: "/api/reports/",
+    PathToLoginController: "/api/login/",
     PathToReportDatasController: "/api/reportDatas/",
     PathToDetailedReportsController: "/api/detailedReports/",
     PathToMonthlyBalancesController: "/api/monthlyBalances/",        
 
 /* Permissions */
-    permissionAdmin: "admin",
-    //permissionWarehouseManager: "warehouseManager",
-    permissionWarehouseManagerOfRawMaterialsAndSupplies: "WarehouseManagerOfRawMaterialsAndSupplies",
+    PermissionAdministrator: "1",    
+    PermissionChiefAccountant: "2",   
+    PermissionDirector: "3",   
+    PermissionThermoplasticProductionManager: "4",
+    PermissionHeadOfBottlingProductionFirst: "5",
+    PermissionHeadOfBottlingProductionSecond: "6",
+
 
 /* text messages */
     MessageIChecked: "Я проверел(а)",

@@ -15,10 +15,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public DateTime date { get; set; }
         public String title { get; set; }
         public Boolean status { get; set; }
-        
-        //public ResponsibleArea ResponsibleArea { get; set; }
-        //public ICollection<ReportColumn> ReportColumns { get; set; }
-        //public ICollection<ReportItem> reportItems { get; set; }
-        //public ICollection<ReportData> reportDatas { get; set; }
     }
 }
