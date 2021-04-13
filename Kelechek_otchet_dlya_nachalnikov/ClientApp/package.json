@@ -27,6 +27,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "react-sticky": "^6.0.3",
+    "react-sticky-table": "^5.1.11",
     "react-sticky-table-thead": "^1.0.6",
     "react-toastify": "^7.0.3",
     "reactstrap": "^8.4.1",

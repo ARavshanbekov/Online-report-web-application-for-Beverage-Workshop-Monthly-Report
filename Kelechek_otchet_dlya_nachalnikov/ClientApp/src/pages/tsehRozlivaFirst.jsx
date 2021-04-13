@@ -7,6 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@material-ui/core/Switch'; 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './../css/custom.css';
+//import './../components/styles.css'
+
 import {
     List,
     Datagrid, 
@@ -24,6 +26,10 @@ import axios from 'axios';
 import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
 import { CONSTANTS } from '../Constants.jsx';
 
+import StickyTable from "./../components/Table.jsx";
+import { tableHeaders, tableData } from "./../components/data.jsx";
+
+
 const CustomShowButton = ({ record }) => {
     return (
         <ShowButton basePath={CONSTANTS.PathToTsehRozlivaFirst} record={record} onClick={(e) => {
@@ -31,7 +37,6 @@ const CustomShowButton = ({ record }) => {
         }} />
     )
 }
-
 
 export const ListTsehRozlivaFirst = props => (
     <List {...props} title={CONSTANTS.TitleForTsehRozlivaFirst}>        
@@ -718,16 +723,22 @@ export class CreateInfo extends React.Component {
                         />
 
                     </Container>
+                    
+                    <h1>Tables with sticky headers</h1>
+                    <h3>
+                        <span>↕</span>️ Scroll to see it in action
+      </h3>
+                    <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />  
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
-                            <Table striped bordered hover size="md" >
+                            <StickyTable striped bordered hover size="md">
                                 <thead>
                                     {this.state.thead}
                                 </thead>
                                 <tbody>
                                     {this.fillTableBody()}
                                 </tbody>
-                            </Table>
+                            </StickyTable>
                             <Button color="primary" size="lg" onClick={this.handleSubmit}>
                                 {CONSTANTS.MessageSave}
                             </Button>

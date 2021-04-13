@@ -1,0 +1,59 @@
+﻿body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+p {
+  margin: 20px 0;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: justify;
+}
+
+/* General table styles */
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table:not(.sticky) {
+  margin-top: 40px;
+}
+
+thead {
+  background-color: #282c35;
+}
+
+th {
+  padding: 25px 0;
+  color: #fff;
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+th:last-child {
+  width: 100px;
+}
+
+tbody tr:nth-last-of-type(odd) {
+  background-color: #f3f3f3;
+}
+
+td {
+  font-size: 18px;
+  padding: 25px 0;
+}
+
+td:last-child {
+  font-size: 30px;
+}
