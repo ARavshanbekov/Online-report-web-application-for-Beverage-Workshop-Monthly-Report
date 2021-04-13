@@ -12,8 +12,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public int order { get; set; }
         public String calculationSign { get; set; }
         public int responsibleAreaId { get; set; }
-
-        //public virtual Report Report { get; set; }
-        //public virtual ReportData ReportData { get; set; }
     }
 }

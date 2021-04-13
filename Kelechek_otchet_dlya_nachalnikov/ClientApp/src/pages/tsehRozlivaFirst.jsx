@@ -1101,7 +1101,18 @@ export class EditInfo extends React.Component {
                     let data = JSON.parse(JSON.stringify(response.data));
                     console.log("data received: " + data);
 
-                    if (data.monthlyBalances.length > 0) {
+                    if (data.report.status) {
+                        this.setState({
+                            apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
+                            reportItems: [],
+                            reportColumns: [],
+                            thead: [],
+                            isApiReturnedData: false,
+                            balanceOperationNumbers: [],
+                            balanceCalculationSigns: []
+                        });
+                    } else {
+                        if (data.monthlyBalances.length > 0) {
                         this.setState({
                             reportColumns: data.reportColumns,
                             reportItems: data.reportItems,
@@ -1184,6 +1195,7 @@ export class EditInfo extends React.Component {
                         this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
                         this.setState({ isApiReturnedData: isApiReturnedData });
                     }
+                    }                    
                 }
             })
             .catch((error) => {
@@ -1596,7 +1608,7 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    {this.props.permissions == "chiefAccountant" &&
+                    {this.props.permissions == CONSTANTS.PermissionChiefAccountant &&
                         <Container fluid>
                             <Form>
                                 <FormControlLabel

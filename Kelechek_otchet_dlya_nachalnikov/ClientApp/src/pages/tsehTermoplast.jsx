@@ -1631,7 +1631,7 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    {this.props.permissions == "chiefAccountant" &&
+                    {this.props.permissions == CONSTANTS.PermissionChiefAccountant &&
                         <Container fluid>
                             <Form>
                                 <FormControlLabel

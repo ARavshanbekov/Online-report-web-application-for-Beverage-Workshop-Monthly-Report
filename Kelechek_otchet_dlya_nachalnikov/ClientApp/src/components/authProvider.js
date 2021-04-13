@@ -1,11 +1,12 @@
 ﻿// in src/authProvider.js
 import decodeJwt from 'jwt-decode';
+import { CONSTANTS } from '../Constants';
 //import { AUTH_LOGIN } from 'react-admin';
 
 export default {
     // called when the user attempts to log in
     login: ({ username, password }) => {
-        const request = new Request('/api/login/', {
+        const request = new Request(CONSTANTS.PathToLoginController, {
             method: 'POST',
             body: JSON.stringify({ username, password }),
             headers: new Headers({ 'Content-Type': 'application/json' }),

@@ -39,6 +39,12 @@
     <Compile Remove="Migrations\20210315044812_MemberPageByRoleTableAdded.Designer.cs" />
     <Compile Remove="Migrations\20210402032517_StandardTableAdded.cs" />
     <Compile Remove="Migrations\20210402032517_StandardTableAdded.Designer.cs" />
+    <Compile Remove="Migrations\20210411083411_MemberTypesAreChangedInMembersTable.cs" />
+    <Compile Remove="Migrations\20210411083411_MemberTypesAreChangedInMembersTable.Designer.cs" />
+    <Compile Remove="Migrations\20210413045924_ForeignKeysAreAdded.cs" />
+    <Compile Remove="Migrations\20210413045924_ForeignKeysAreAdded.Designer.cs" />
+    <Compile Remove="Migrations\20210413053849_ForeignKeysAreAdded.cs" />
+    <Compile Remove="Migrations\20210413053849_ForeignKeysAreAdded.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

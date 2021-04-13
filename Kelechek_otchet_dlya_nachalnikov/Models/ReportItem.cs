@@ -12,8 +12,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public String unit { get; set; }
         public int responsibleAreaId { get; set; }
         public int order { get; set; }
-
-        //public Report Report { get; set; }
-        //public ICollection<ReportData> reportDatas { get; set; }
     }
 }

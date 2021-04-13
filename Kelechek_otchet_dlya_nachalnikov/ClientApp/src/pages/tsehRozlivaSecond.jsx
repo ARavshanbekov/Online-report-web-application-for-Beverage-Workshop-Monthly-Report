@@ -1101,89 +1101,101 @@ export class EditInfo extends React.Component {
                     let data = JSON.parse(JSON.stringify(response.data));
                     console.log("data received: " + data);
 
-                    if (data.monthlyBalances.length > 0) {
+                    if (data.report.status) {
                         this.setState({
-                            reportColumns: data.reportColumns,
-                            reportItems: data.reportItems,
-                            monthlyBalances: data.monthlyBalances,
-                            reportStandards: data.reportStandards,
-                            reportDatas: data.reportDatas
-                        })
+                            apiStatus: CONSTANTS.MessageCannotDisplayBlankForThisMonth,
+                            reportItems: [],
+                            reportColumns: [],
+                            thead: [],
+                            isApiReturnedData: false,
+                            balanceOperationNumbers: [],
+                            balanceCalculationSigns: []
+                        });
+                    } else {
+                        if (data.monthlyBalances.length > 0) {
+                            this.setState({
+                                reportColumns: data.reportColumns,
+                                reportItems: data.reportItems,
+                                monthlyBalances: data.monthlyBalances,
+                                reportStandards: data.reportStandards,
+                                reportDatas: data.reportDatas
+                            })
 
-                        let reportColumns = data.reportColumns;
-                        let reportItems = data.reportItems;
-                        let monthlyBalances = data.monthlyBalances;
+                            let reportColumns = data.reportColumns;
+                            let reportItems = data.reportItems;
+                            let monthlyBalances = data.monthlyBalances;
 
-                        //console.log(JSON.stringify(data[0].name));
+                            //console.log(JSON.stringify(data[0].name));
 
-                        let childrenTH = []
-                        //create table heads
-                        for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                            for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                                if ((reportColumns[indexCount].order) == CONSTANTS.OverrunColumnOrderOfTsehRozlivaSecond && CONSTANTS.OverrunColumnOrderOfTsehRozlivaSecond == j) {
-                                    childrenTH.push(<td colSpan="2" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="2">Перерасход</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
-                                    j = j + 1
+                            let childrenTH = []
+                            //create table heads
+                            for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                                for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
+                                    if ((reportColumns[indexCount].order) == CONSTANTS.OverrunColumnOrderOfTsehRozlivaSecond && CONSTANTS.OverrunColumnOrderOfTsehRozlivaSecond == j) {
+                                        childrenTH.push(<td colSpan="2" style={{ padding: "0" }} className="h-100">
+                                            <table style={{ margin: "0" }} className="w-100 h-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan="2">Перерасход</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>{reportColumns[j].name}</th>
+                                                        <th>{reportColumns[j + 1].name}</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </td>);
+                                        j = j + 1
 
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond && CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond == j) {
-                                    childrenTH.push(<td colSpan="2" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="2">Экономия</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
+                                        break;
+                                    } else if ((reportColumns[indexCount].order) == CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond && CONSTANTS.SavingColumnOrderOfTsehRozlivaSecond == j) {
+                                        childrenTH.push(<td colSpan="2" style={{ padding: "0" }} className="h-100">
+                                            <table style={{ margin: "0" }} className="w-100 h-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan="2">Экономия</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>{reportColumns[j].name}</th>
+                                                        <th>{reportColumns[j + 1].name}</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </td>);
 
-                                    j = j + 1
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == j) {
-                                    console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
-                                    let as = reportColumns[j].name;
-                                    childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                    break;
-                                } else {
+                                        j = j + 1
+                                        break;
+                                    } else if ((reportColumns[indexCount].order) == j) {
+                                        console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
+                                        let as = reportColumns[j].name;
+                                        childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+                                        break;
+                                    } else {
 
+                                    }
                                 }
                             }
-                        }
-                        this.state.thead = [];
-                        this.state.thead.push(<tr>{childrenTH}</tr>);
+                            this.state.thead = [];
+                            this.state.thead.push(<tr>{childrenTH}</tr>);
 
-                        let totalColumnNumber = Object.keys(reportColumns).length;
-                        for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
+                            let totalColumnNumber = Object.keys(reportColumns).length;
+                            for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
 
-                            //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
-                            this.state.balanceOperationNumbers.push([totalColumnNumber]);
-                            this.state.balanceCalculationSigns.push([totalColumnNumber]);
+                                //let tempBalanceOperationNumbers = this.state.balanceOperationNumbers;
+                                this.state.balanceOperationNumbers.push([totalColumnNumber]);
+                                this.state.balanceCalculationSigns.push([totalColumnNumber]);
 
-                            for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                                this.state.balanceOperationNumbers[xCoordinatePosition][j] = 0;
-                                this.state.balanceCalculationSigns[xCoordinatePosition][j] = "0";
+                                for (let j = 0; j < Object.keys(reportColumns).length; j++) {
+                                    this.state.balanceOperationNumbers[xCoordinatePosition][j] = 0;
+                                    this.state.balanceCalculationSigns[xCoordinatePosition][j] = "0";
+                                }
                             }
-                        }
 
-                        let isApiReturnedData = true;
-                        this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                        this.setState({ isApiReturnedData: isApiReturnedData });
-                    }
+                            let isApiReturnedData = true;
+                            this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
+                            this.setState({ isApiReturnedData: isApiReturnedData });
+                        }
+                    }                    
                 }
             })
             .catch((error) => {
@@ -1596,7 +1608,7 @@ export class ShowInfo extends React.Component {
                         </Col>
 
                     </SimpleShowLayout >
-                    {this.props.permissions == "chiefAccountant" &&
+                    {this.props.permissions == CONSTANTS.PermissionChiefAccountant &&
                         <Container fluid>
                             <Form>
                                 <FormControlLabel
