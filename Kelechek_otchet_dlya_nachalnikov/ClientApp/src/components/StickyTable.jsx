@@ -6,14 +6,16 @@ import './../css/custom.css';
 export default function StickyTable({ headers = [], data = [] }) {
     const { tableRef, isSticky } = useStickyHeader();
 
+    const ref = React.useRef(null);
+
     const renderHeader = () => (
         <thead>
             {headers}
         </thead>
-    );
+    );           
 
     return (
-        <div>
+        <div ref={ref}>            
             {isSticky && (
                 /*
                 .sticky will be the copy of table header while sticky 
@@ -21,10 +23,12 @@ export default function StickyTable({ headers = [], data = [] }) {
                 */
                 <Table 
                     striped bordered hover size="md"
-                    className="sticky"
+                    
                     style={{
                         position: "fixed",                        
-                        top: 0                        
+                        top: 0,
+                        width: ref.current.offsetWidth,
+                        backgroundColor: "white"
                     }}
                 >
                     {renderHeader()}
@@ -36,7 +40,7 @@ export default function StickyTable({ headers = [], data = [] }) {
                 <tbody>
                     {data}
                 </tbody>
-            </Table>
+            </Table>            
         </div>
     );
 }
