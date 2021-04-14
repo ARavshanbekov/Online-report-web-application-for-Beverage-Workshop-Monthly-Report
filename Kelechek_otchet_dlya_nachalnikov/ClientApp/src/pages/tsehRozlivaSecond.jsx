@@ -1,4 +1,5 @@
 ﻿// in src/tsehRozlivaSecond.js
+import * as DecimalJS from 'decimal.js';
 import React from "react";
 import _uniqueId from 'lodash/uniqueId';
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './../css/custom.css';
+
 import {
     List,
     Datagrid,
@@ -21,8 +23,10 @@ import {
     usePermissions
 } from 'react-admin';
 import axios from 'axios';
-import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { Row, Col, Container, Form, Button } from 'react-bootstrap';
 import { CONSTANTS } from '../Constants.jsx';
+
+import StickyTable from "../components/StickyTable.jsx";
 
 const CustomShowButton = ({ record }) => {
     return (
@@ -31,7 +35,6 @@ const CustomShowButton = ({ record }) => {
         }} />
     )
 }
-
 
 export const ListTsehRozlivaSecond = props => (
     <List {...props} title={CONSTANTS.TitleForTsehRozlivaSecond}>
@@ -211,17 +214,19 @@ export class CreateInfo extends React.Component {
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
         console.table(tempArray);
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
+        tempArray[targetRowId][targetColId] = parseFloat(target.value);
 
-        tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] * tempArray[targetRowId][CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond] / 100;
-        tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond];
-        tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond];
+        tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]).times(tempArray[targetRowId][CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond]).dividedBy(100)).valueOf();
+        tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond])).valueOf();
+        tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]).minus(tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond])).valueOf();
         if (tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] > tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]) {
             tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = 0;
-            tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond];
+            let xValue = new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond]);
+            tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = xValue.minus(tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]).valueOf();
         } else if (tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] < tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]) {
             tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = 0;
-            tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond];
+            let xValue = new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]);
+            tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = xValue.minus(tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond]).valueOf();
         } else {
 
         }
@@ -244,7 +249,7 @@ export class CreateInfo extends React.Component {
     handleResultValueChange(target) {
         let targetValue = target.value;
         let tempArray = this.state.balanceOperationNumbers;
-        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
+        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseFloat(targetValue);
         this.setState({
             balanceOperationNumbers: tempArray
         })
@@ -718,16 +723,11 @@ export class CreateInfo extends React.Component {
                         />
 
                     </Container>
+
+
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
-                            <Table striped bordered hover size="md" >
-                                <thead>
-                                    {this.state.thead}
-                                </thead>
-                                <tbody>
-                                    {this.fillTableBody()}
-                                </tbody>
-                            </Table>
+                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
                             <Button color="primary" size="lg" onClick={this.handleSubmit}>
                                 {CONSTANTS.MessageSave}
                             </Button>
@@ -917,7 +917,6 @@ export class EditInfo extends React.Component {
                     } else if (reportColumnValue.order === yCoordinatePosition) {
 
                         childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} onResultValueChange={this.handleResultValueChange} /></td>);
-
                     } else {
                         console.log("Faillll");
                     }
@@ -936,17 +935,19 @@ export class EditInfo extends React.Component {
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
         console.table(tempArray);
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
+        tempArray[targetRowId][targetColId] = parseFloat(target.value);
 
-        tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] * tempArray[targetRowId][CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond] / 100;
-        tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond];
-        tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond] + tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond];
+        tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]).times(tempArray[targetRowId][CONSTANTS.LossValueColumnOrderOfTsehRozlivaSecond]).dividedBy(100)).valueOf();
+        tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.InvoiceDefectColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.CompletedInTheWarehouseColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.AmountFromLossesColumnOrderOfTsehRozlivaSecond])).valueOf();
+        tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehRozlivaSecond]).plus(tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehRozlivaSecond]).minus(tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehRozlivaSecond])).valueOf();
         if (tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] > tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]) {
             tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = 0;
-            tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond];
+            let xValue = new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond]);
+            tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = xValue.minus(tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]).valueOf();
         } else if (tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond] < tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]) {
             tempArray[targetRowId][CONSTANTS.OverrunAmountColumnOrderOfTsehRozlivaSecond] = 0;
-            tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond] - tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond];
+            let xValue = new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ActualTotalExpenseColumnOrderOfTsehRozlivaSecond]);
+            tempArray[targetRowId][CONSTANTS.SavingAmountColumnOrderOfTsehRozlivaSecond] = xValue.minus(tempArray[targetRowId][CONSTANTS.ExpectedTotalConsumptionColumnOrderOfTsehRozlivaSecond]).valueOf();
         } else {
 
         }
@@ -964,7 +965,7 @@ export class EditInfo extends React.Component {
     handleResultValueChange(target) {
         let targetValue = target.value;
         let tempArray = this.state.balanceOperationNumbers;
-        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
+        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseFloat(targetValue);
         this.setState({
             balanceOperationNumbers: tempArray
         })
@@ -1123,7 +1124,7 @@ export class EditInfo extends React.Component {
 
                             let reportColumns = data.reportColumns;
                             let reportItems = data.reportItems;
-                            let monthlyBalances = data.monthlyBalances;
+                            let report = data.report;
 
                             //console.log(JSON.stringify(data[0].name));
 
@@ -1191,11 +1192,16 @@ export class EditInfo extends React.Component {
                                 }
                             }
 
+                            console.log("report.date", report.date)
+                            let reportMonth = new Date(report.date).getMonth() + 1;
+                            console.log("reportMonth", reportMonth)
                             let isApiReturnedData = true;
-                            this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
-                            this.setState({ isApiReturnedData: isApiReturnedData });
+                            this.setState({
+                                isApiReturnedData: isApiReturnedData,
+                                currentMonth: reportMonth
+                            });
                         }
-                    }                    
+                    }
                 }
             })
             .catch((error) => {
@@ -1250,14 +1256,7 @@ export class EditInfo extends React.Component {
 
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
-                            <Table striped bordered hover size="md" >
-                                <thead>
-                                    {this.state.thead}
-                                </thead>
-                                <tbody>
-                                    {this.fillTableBody()}
-                                </tbody>
-                            </Table>
+                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
                             <Button color="primary" size="lg" onClick={this.handleSubmit} >
                                 <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
                             </Button>
@@ -1298,9 +1297,7 @@ export class ShowInfo extends React.Component {
             reportStatus: false
         };
 
-        this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleResultValueChange = this.handleResultValueChange.bind(this);
     }
 
     fillTableBody() {
@@ -1350,29 +1347,6 @@ export class ShowInfo extends React.Component {
         }
 
         return tbody;
-    }
-
-    handleValueChange(target) {
-
-        let targetRowId = target.rowId;
-        let targetColId = target.colId;
-        let tempArray = this.state.balanceOperationNumbers;
-        tempArray[targetRowId][targetColId] = parseInt(target.value);
-
-        this.setState({
-            balanceOperationNumbers: tempArray
-        })
-    }
-
-    handleResultValueChange(target) {
-        let targetValue = target.value;
-        let tempArray = this.state.balanceOperationNumbers;
-        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
-        this.setState({
-            balanceOperationNumbers: tempArray
-        })
-
-        //console.log("handleResultValueChange triggered");
     }
 
     handleSubmit = (event) => {
@@ -1459,6 +1433,7 @@ export class ShowInfo extends React.Component {
                         let reportColumns = data.reportColumns;
                         let reportItems = data.reportItems;
                         let monthlyBalances = data.monthlyBalances;
+                        let report = data.report;
                         //console.log(JSON.stringify(data[0].name));
 
                         let childrenTH = []
@@ -1525,11 +1500,14 @@ export class ShowInfo extends React.Component {
                             }
                         }
 
+                        console.log("report.date", report.date)
+                        let reportMonth = new Date(report.date).getMonth() + 1;
+                        console.log("reportMonth", reportMonth)
                         let isApiReturnedData = true;
-                        this.setState({ balanceAtTheEndIndex: Object.keys(reportColumns).length });
                         this.setState({
                             isApiReturnedData: isApiReturnedData,
-                            reportStatus: data.report.status
+                            currentMonth: reportMonth,
+                            reportStatus: report.status
                         });
                     }
                 }
@@ -1597,14 +1575,7 @@ export class ShowInfo extends React.Component {
 
                     <SimpleShowLayout >
                         <Col md={12} className="p-0 m-0">
-                            <Table striped bordered hover size="md" /*className="w-100"*/ >
-                                <thead /*style={divStyle}*/>
-                                    {this.state.thead}
-                                </thead>
-                                <tbody>
-                                    {this.fillTableBody()}
-                                </tbody>
-                            </Table>
+                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
                         </Col>
 
                     </SimpleShowLayout >
