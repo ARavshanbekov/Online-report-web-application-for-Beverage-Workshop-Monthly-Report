@@ -83,10 +83,11 @@
 /* text messages */
     MessageIChecked: "Я проверел(а)",
     MessageSaveChanges: "Сохранить Изменении",
-    MessageSave: "✓ Сохранить",
+    MessageSave: "Сохранить",
     MessageCannotDisplayBlankForThisMonth: "Не может открыть бланку на этот месяц!",
     MessageUpdatedSuccessfully: "Успешно обновлено",
     MessageError: "Ошибка",
+    MessagePrint: "Печатать"
     
 };
 export { CONSTANTS };

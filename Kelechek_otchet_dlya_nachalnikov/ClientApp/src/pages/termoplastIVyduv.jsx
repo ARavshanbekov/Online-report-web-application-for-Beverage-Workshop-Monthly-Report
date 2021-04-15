@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { StickyContainer, Sticky } from "react-sticky";
-import './../css/custom.css';
+import './../components/css/custom.css';
 import StickyTable from "react-sticky-table-thead";
 
 import {
