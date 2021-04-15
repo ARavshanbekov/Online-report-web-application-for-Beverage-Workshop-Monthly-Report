@@ -7,8 +7,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import './../css/custom.css';
-
+import './../components/css/custom.css';
+import PrintIcon from '@material-ui/icons/Print';
+import SaveIcon from '@material-ui/icons/Save';
+import Button from '@material-ui/core/Button';
 import {
     List,
     Datagrid,
@@ -23,10 +25,13 @@ import {
     usePermissions
 } from 'react-admin';
 import axios from 'axios';
-import { Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { Row, Col, Container, Form } from 'react-bootstrap';
 import { CONSTANTS } from '../Constants.jsx';
 
 import StickyTable from "../components/StickyTable.jsx";
+import PrintReportTemplate from "../components/PrintReportTemplate.jsx";
+
+import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 
 const CustomShowButton = ({ record }) => {
     return (
@@ -728,7 +733,10 @@ export class CreateInfo extends React.Component {
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
                             <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
-                            <Button color="primary" size="lg" onClick={this.handleSubmit}>
+                            <Button variant="contained"
+                                color="secondary"
+                                startIcon={<SaveIcon />}
+                                onClick={this.handleSubmit}>
                                 {CONSTANTS.MessageSave}
                             </Button>
                             <ToastContainer />
@@ -1257,8 +1265,11 @@ export class EditInfo extends React.Component {
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
                             <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
-                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                            <Button variant="contained"
+                                color="secondary"
+                                startIcon={<SaveIcon />}
+                                onClick={this.handleSubmit} >
+                                <span aria-hidden>{CONSTANTS.MessageSaveChanges}</span>
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -1286,6 +1297,7 @@ export class ShowInfo extends React.Component {
             balanceCalculationSigns: [],
             balanceAtTheEndIndex: 0,
             report: [],
+            responsibleArea: [],
             reportColumns: [],
             reportItems: [],
             monthlyBalances: [],
@@ -1298,6 +1310,7 @@ export class ShowInfo extends React.Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handlePrint = this.handlePrint.bind(this);
     }
 
     fillTableBody() {
@@ -1427,7 +1440,8 @@ export class ShowInfo extends React.Component {
                             reportItems: data.reportItems,
                             monthlyBalances: data.monthlyBalances,
                             reportStandards: data.reportStandards,
-                            reportDatas: data.reportDatas
+                            reportDatas: data.reportDatas,
+                            responsibleArea: data.responsibleArea
                         })
 
                         let reportColumns = data.reportColumns;
@@ -1540,6 +1554,23 @@ export class ShowInfo extends React.Component {
             });
     }
 
+    handlePrint(event) {
+        var css = '@page { size: landscape; }',
+            head = document.getElementById("printContent"),
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+        style.media = 'print';
+
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+
+        head.appendChild(style);
+    }
+
     render() {
         const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
@@ -1568,6 +1599,24 @@ export class ShowInfo extends React.Component {
         return (
 
             <Container className="themed-container h-100" fluid={true}>
+                {this.state.reportStatus &&
+                    <Row>
+                        <div id="printContent" >
+                            <ReactToPrint content={() => this.printRef} onBeforePrint={this.handlePrint} pageStyle="@{size: auto; margin: 25mm; }">
+                                <PrintContextConsumer>
+                                    {({ handlePrint }) => (
+                                        <Button variant="contained"
+                                            color="secondary"
+                                            startIcon={<PrintIcon />} onClick={handlePrint}>{CONSTANTS.MessagePrint}</Button>
+                                    )}
+                                </PrintContextConsumer>
+                            </ReactToPrint>
+                            <div className="d-none">
+                                <PrintReportTemplate ref={el => (this.printRef = el)} headers={this.state.thead} data={this.fillTableBody()} reportMonth={this.state.currentMonth} responsibleAreaName={this.state.responsibleArea.name} />
+                            </div>
+                        </div>
+                    </Row>
+                }
                 <Row>
                     <Container>
                         <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
@@ -1593,7 +1642,10 @@ export class ShowInfo extends React.Component {
                                     label={CONSTANTS.MessageIChecked}
                                 />
                                 <div>
-                                    <Button color="primary" size="lg" onClick={this.handleSubmit} >
+                                    <Button variant="contained"
+                                        color="secondary"
+                                        startIcon={<SaveIcon />}
+                                        onClick={this.handleSubmit} >
                                         <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
                                     </Button>
                                 </div>

@@ -44,7 +44,14 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
             if (report == null)
             {
                 return NotFound();
-            }            
+            }
+
+            var responsibleArea = await _context.ResponsibleAreas.Where(r => r.id == report.responsibleAreaId).FirstOrDefaultAsync();
+
+            if (responsibleArea == null)
+            {
+                return NotFound();
+            }
 
             var reportMonth = report.date.Month;
             var reportColumns = await _context.ReportColumns.Where(r => r.responsibleAreaId == report.responsibleAreaId).ToListAsync();
@@ -77,7 +84,8 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 reportItems = reportItems,
                 monthlyBalances = monthlyBalance,
                 reportDatas = reportDatas,
-                reportStandards = reportStandards
+                reportStandards = reportStandards,
+                responsibleArea = responsibleArea
             };
             return Ok(dynamicObject);
         }

@@ -7,7 +7,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import './../css/custom.css';
+import './../components/css/custom.css';
+import PrintIcon from '@material-ui/icons/Print';
+import SaveIcon from '@material-ui/icons/Save';
+import Button from '@material-ui/core/Button';
 import {
     List,
     Datagrid,
@@ -22,14 +25,15 @@ import {
     usePermissions
 } from 'react-admin';
 import axios from 'axios';
-import { Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { Row, Col, Container, Form } from 'react-bootstrap';
 import { CONSTANTS } from '../Constants.jsx';
 
 import StickyTable from "../components/StickyTable.jsx";
+import PrintReportTemplate from "../components/PrintReportTemplate.jsx";
 
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 
-import { ComponentToPrintFake } from './ComponentToPrint';
+//import { ComponentToPrintFake } from './ComponentToPrint';
 
 const CustomShowButton = ({ record }) => {
     return (
@@ -82,7 +86,7 @@ class MyCreateInputField extends React.Component {
     render() {
         const idValue = this.props.id;
         return (
-            <Form.Control className="m-0" type="number" style={{ padding: "0", margin: "0"  }} id={idValue} value={this.state.value} onChange={this.handleChange} />
+            <Form.Control className="m-0" type="number" style={{ padding: "0", margin: "0" }} id={idValue} value={this.state.value} onChange={this.handleChange} />
         );
     }
 }
@@ -143,8 +147,8 @@ export class CreateInfo extends React.Component {
                 let reportItemValue = reportItems.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === xCoordinatePosition);
                 //let reportColumnValue = reportColumns.find(element => element.order === yCoordinatePosition && element.responsibleAreaId === reportStandards[0].responsibleAreaId);
                 for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                    if ((reportColumns[indexCount].order) == CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {                       
-                        let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;                       
+                    if ((reportColumns[indexCount].order) == CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {
+                        let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;
                         childrenTB.push(<td>{lossValue}</td>);
                         //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + yCoordinatePosition);
                         this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = lossValue;
@@ -173,7 +177,7 @@ export class CreateInfo extends React.Component {
             }
 
             tbody.push(<tr>{childrenTB}</tr>)
-        }       
+        }
 
         return tbody;
     }
@@ -193,7 +197,7 @@ export class CreateInfo extends React.Component {
         this.setState({
             balanceOperationNumbers: tempArray
         })
-       
+
         console.table(this.state.balanceOperationNumbers);
     }
 
@@ -391,7 +395,7 @@ export class CreateInfo extends React.Component {
                     //create table heads
                     for (let j = 0; j < Object.keys(reportColumns).length; j++) {
                         for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {                                
+                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
                                 childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
                                     <table style={{ margin: "0" }} className="w-100 h-100">
                                         <thead>
@@ -413,7 +417,7 @@ export class CreateInfo extends React.Component {
                                 //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
                                 //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
                                 break;
-                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {                               
+                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
                                 childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
                                     <table style={{ margin: "0" }} className="w-100 h-100">
                                         <thead>
@@ -530,7 +534,7 @@ export class CreateInfo extends React.Component {
                     //create table heads
                     for (let j = 0; j < Object.keys(reportColumns).length; j++) {
                         for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {                                
+                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
                                 childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
                                     <table style={{ margin: "0" }} className="w-100 h-100">
                                         <thead>
@@ -541,7 +545,7 @@ export class CreateInfo extends React.Component {
                                                 <th>{reportColumns[j].name}</th>
                                                 <th>{reportColumns[j + 1].name}</th>
                                                 <th>{reportColumns[j + 2].name}</th>
-                                                <th>{reportColumns[j + 3].name}</th>                                             
+                                                <th>{reportColumns[j + 3].name}</th>
                                                 <th>{reportColumns[j + 4].name}</th>
                                             </tr>
                                         </thead>
@@ -552,7 +556,7 @@ export class CreateInfo extends React.Component {
                                 //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
                                 //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
                                 break;
-                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {                                
+                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
                                 childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
                                     <table style={{ margin: "0" }} className="w-100 h-100">
                                         <thead>
@@ -681,26 +685,18 @@ export class CreateInfo extends React.Component {
 
                     </Container>
 
-                    <div>
-                        <ReactToPrint content={() => this.printRef}>
-                            <PrintContextConsumer>
-                                {({ handlePrint }) => (
-                                    <button onClick={handlePrint}>Print this out!</button>
-                                )}
-                            </PrintContextConsumer>
-                        </ReactToPrint>
-                        
-                    </div>
-
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
-                            <StickyTable ref={el => (this.printRef = el)} size="md" headers={this.state.thead} data={this.fillTableBody()} />
-                            <Button color="primary" size="lg" onClick={this.handleSubmit}>
+                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
+                            <Button variant="contained"
+                                color="secondary"
+                                startIcon={<SaveIcon />} onClick={this.handleSubmit}>
                                 {CONSTANTS.MessageSave}
                             </Button>
                             <ToastContainer />
                         </Col>
                     </Form >
+
                 </Row>
             </Container>
         )
@@ -1278,13 +1274,16 @@ export class EditInfo extends React.PureComponent {
                 <Row>
                     <Container>
                         <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
-                    </Container>                    
+                    </Container>
 
                     <Form onSubmit={this.handleSubmit}>
                         <Col md={12} className="p-0 m-0">
                             <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
-                            <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                            <Button variant="contained"
+                                color="secondary"
+                                startIcon={<SaveIcon />}
+                                onClick={this.handleSubmit} >
+                                <span aria-hidden>{CONSTANTS.MessageSaveChanges}</span>
                             </Button>
                             <ToastContainer />
                         </Col>
@@ -1312,6 +1311,7 @@ export class ShowInfo extends React.Component {
             balanceCalculationSigns: [],
             balanceAtTheEndIndex: 0,
             report: [],
+            responsibleArea: [],
             reportColumns: [],
             reportItems: [],
             monthlyBalances: [],
@@ -1322,8 +1322,9 @@ export class ShowInfo extends React.Component {
             isBodyFilled: false,
             reportStatus: false
         };
-       
-        this.handleSubmit = this.handleSubmit.bind(this);        
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handlePrint = this.handlePrint.bind(this);
     }
 
     fillTableBody() {
@@ -1436,6 +1437,23 @@ export class ShowInfo extends React.Component {
             });
     }
 
+    handlePrint(event) {
+        var css = '@page { size: landscape; }',
+            head = document.getElementById("printContent"),
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+        style.media = 'print';
+
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+
+        head.appendChild(style);
+    }
+
     componentDidMount() {
 
         let reportId = parseInt(localStorage.getItem('reportId'));
@@ -1453,7 +1471,8 @@ export class ShowInfo extends React.Component {
                             reportItems: data.reportItems,
                             monthlyBalances: data.monthlyBalances,
                             reportStandards: data.reportStandards,
-                            reportDatas: data.reportDatas
+                            reportDatas: data.reportDatas,
+                            responsibleArea: data.responsibleArea
                         })
 
                         let reportColumns = data.reportColumns;
@@ -1600,8 +1619,25 @@ export class ShowInfo extends React.Component {
         }
 
         return (
-
             <Container className="themed-container h-100" fluid={true}>
+                {this.state.reportStatus &&
+                    <Row>
+                        <div id="printContent" >
+                            <ReactToPrint content={() => this.printRef} onBeforePrint={this.handlePrint} pageStyle="@{size: auto; margin: 25mm; }">
+                                <PrintContextConsumer>
+                                    {({ handlePrint }) => (
+                                        <Button variant="contained"
+                                            color="secondary"
+                                            startIcon={<PrintIcon />} onClick={handlePrint}>{CONSTANTS.MessagePrint}</Button>
+                                    )}
+                                </PrintContextConsumer>
+                            </ReactToPrint>
+                            <div className="d-none">
+                                <PrintReportTemplate ref={el => (this.printRef = el)} headers={this.state.thead} data={this.fillTableBody()} reportMonth={this.state.currentMonth} responsibleAreaName={this.state.responsibleArea.name} />
+                            </div>
+                        </div>
+                    </Row>
+                }
                 <Row>
                     <Container>
                         <h1>Отчет на {months[this.state.currentMonth - 1]} месяц</h1>
@@ -1609,7 +1645,7 @@ export class ShowInfo extends React.Component {
 
                     <SimpleShowLayout >
                         <Col md={12} className="p-0 m-0">
-                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />  
+                            <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
                         </Col>
 
                     </SimpleShowLayout >
@@ -1627,8 +1663,11 @@ export class ShowInfo extends React.Component {
                                     label={CONSTANTS.MessageIChecked}
                                 />
                                 <div>
-                                    <Button color="primary" size="lg" onClick={this.handleSubmit} >
-                                        <span aria-hidden>&#10003; {CONSTANTS.MessageSaveChanges}</span>
+                                    <Button variant="contained"
+                                        color="secondary"
+                                        startIcon={<SaveIcon />}
+                                        onClick={this.handleSubmit} >
+                                        <span aria-hidden>{CONSTANTS.MessageSaveChanges}</span>
                                     </Button>
                                 </div>
                             </Form>

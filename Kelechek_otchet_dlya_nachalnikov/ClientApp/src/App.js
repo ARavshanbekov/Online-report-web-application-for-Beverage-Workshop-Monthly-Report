@@ -1,6 +1,6 @@
 // in src/App.js
 import * as React from "react";
-import { Admin, Resource, usePermissions } from 'react-admin';
+import { Admin, Resource, usePermissions, Login } from 'react-admin';
 import { MemberList, MemberCreate, MemberEdit } from './pages/members';
 import { CreateTsehTermoplast, EditTsehTermoplast, ShowTsehTermoplast, ListTsehTermoplast } from './pages/tsehTermoplast';
 import { ListTsehRozlivaSecond, CreateTsehRozlivaSecond, EditTsehRozlivaSecond, ShowTsehRozlivaSecond } from './pages/tsehRozlivaSecond';
@@ -9,16 +9,17 @@ import dataProvider from './components/dataProvider';
 import authProvider from './components/authProvider';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 import russianMessages from 'ra-language-russian';
-import './css/custom.css';
+import './components/css/custom.css';
 import Dashboard from './Dashboard';
 import { CONSTANTS } from "./Constants";
+const MyLoginPage = () => <Login backgroundImage="https://source.unsplash.com/random/1600x900/daily" />;
 
 const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
 
 const App = () => {      
     const { permissions } = usePermissions();
-    return (        
-        <Admin i18nProvider={i18nProvider} dashboard={Dashboard} dataProvider={dataProvider} authProvider={authProvider} >
+    return (
+        <Admin i18nProvider={i18nProvider} dashboard={Dashboard} dataProvider={dataProvider} authProvider={authProvider} loginPage={MyLoginPage} >
             {permissions => [
                 permissions === CONSTANTS.PermissionAdministrator
                     ? <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} create={MemberCreate} edit={MemberEdit} />
@@ -49,7 +50,10 @@ const App = () => {
                     : null,
                 permissions === CONSTANTS.PermissionDirector
                     ? <Resource name="tsehTermoplast" options={{ label: "Цех Термопласт" }} list={ListTsehTermoplast} show={ShowTsehTermoplast} />
-                    : null
+                    : null,
+                permissions === CONSTANTS.PermissionDirector
+                    ? <Resource name="members" options={{ label: "Ползователи" }} list={MemberList} create={MemberCreate} edit={MemberEdit} />
+                    : null,
             ]}             
             </Admin >                       
     )
