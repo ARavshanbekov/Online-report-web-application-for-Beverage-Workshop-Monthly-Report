@@ -7,10 +7,22 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
 {
     public class ReportItem
     {
-        public int id { get; set; }        
-        public String name { get; set; }
-        public String unit { get; set; }
-        public int responsibleAreaId { get; set; }
+        public ReportItem()
+        {
+            MonthlyBalances = new HashSet<MonthlyBalance>();
+            ReportDatas = new HashSet<ReportData>();
+            ReportStandards = new HashSet<ReportStandard>();
+        }
+
+        public int id { get; set; }
+        public string name { get; set; }
+        public string unit { get; set; }
         public int order { get; set; }
+        public int? responsibleAreaId { get; set; }
+
+        public virtual ResponsibleArea ResponsibleArea { get; set; }
+        public virtual ICollection<MonthlyBalance> MonthlyBalances { get; set; }
+        public virtual ICollection<ReportData> ReportDatas { get; set; }
+        public virtual ICollection<ReportStandard> ReportStandards { get; set; }
     }
 }
