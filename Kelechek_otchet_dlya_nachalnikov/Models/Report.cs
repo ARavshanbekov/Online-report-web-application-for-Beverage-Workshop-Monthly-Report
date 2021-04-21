@@ -8,12 +8,22 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
 {
     public class Report
     {
-        [Key]
+        public Report()
+        {
+            MonthlyBalances = new HashSet<MonthlyBalance>();
+            ReportDatas = new HashSet<ReportData>();
+        }
+
         public int id { get; set; }
-        public int responsibleAreaId { get; set; }   
-        public int memberId { get; set; }
         public DateTime date { get; set; }
-        public String title { get; set; }
-        public Boolean status { get; set; }
+        public string title { get; set; }
+        public bool atatus { get; set; }
+        public int? responsibleAreaId { get; set; }
+        public int? memberId { get; set; }
+
+        public virtual Member Members { get; set; }
+        public virtual ResponsibleArea ResponsibleArea { get; set; }
+        public virtual ICollection<MonthlyBalance> MonthlyBalances { get; set; }
+        public virtual ICollection<ReportData> ReportDatas { get; set; }
     }
 }
