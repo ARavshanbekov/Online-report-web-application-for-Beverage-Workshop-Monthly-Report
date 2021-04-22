@@ -137,42 +137,40 @@ export class CreateInfo extends React.Component {
             let childrenTB = []
 
             let monthlyBalanceValue = monthlyBalances.find(element => element.order === xCoordinatePosition)
-
+            let reportItemValue = reportItems.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === xCoordinatePosition);
             childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItems[xCoordinatePosition].name}</td>);
             childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{monthlyBalanceValue.residualBalance}</td>);
             this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast] = monthlyBalanceValue.residualBalance;
             //this.state.balanceCalculationSigns[xCoordinatePosition][2] = reportColumns[2].calculationSign;
             for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
 
-                let reportItemValue = reportItems.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === xCoordinatePosition);
-                //let reportColumnValue = reportColumns.find(element => element.order === yCoordinatePosition && element.responsibleAreaId === reportStandards[0].responsibleAreaId);
-                for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                    if ((reportColumns[indexCount].order) == CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {
-                        let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;
-                        childrenTB.push(<td>{lossValue}</td>);
-                        //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + yCoordinatePosition);
-                        this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = lossValue;
-                        break;
-                    } else if ((reportColumns[indexCount].order) == CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast) {
+                
+                let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === yCoordinatePosition)
+                
+                //let reportColumnValue = reportColumns.find(element => element.order === yCoordinatePosition && element.responsibleAreaId === reportStandards[0].responsibleAreaId);                
+                if (reportColumnValue.order === CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {
+                    let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;
+                    childrenTB.push(<td>{lossValue}</td>);
+                    //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + yCoordinatePosition);
+                    this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.LossValueColumnOrderOfTsehTermoplast] = lossValue;
+                    
+                } else if (reportColumnValue.order === CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast) {
+                    console.log("INSIDEtOTALArrival", reportColumnValue);
+                    childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
+                   
+                } else if (reportColumnValue.order === CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast) {
 
-                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                        break;
-                    } else if ((reportColumns[indexCount].order) == CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast) {
+                    childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
+                   
+                } else if (reportColumnValue.order === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast) {
 
-                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                        break;
-                    } else if ((reportColumns[indexCount].order) == CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast) {
+                    childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
+                   
+                } else if (reportColumnValue.order === yCoordinatePosition) {
+                    childrenTB.push(<td className="px-0 py-auto"><MyCreateInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} onValueChange={this.handleValueChange} /></td>);
+                  
+                } else {
 
-                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                        break;
-                    } else if ((reportColumns[indexCount].order) == yCoordinatePosition) {
-                        childrenTB.push(<td className="px-0 py-auto"><MyCreateInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} onValueChange={this.handleValueChange} /></td>);
-
-                        this.state.balanceCalculationSigns[xCoordinatePosition][yCoordinatePosition] = reportColumns[indexCount].calculationSign;
-                        break;
-                    } else {
-
-                    }
                 }
             }
 
@@ -394,58 +392,62 @@ export class CreateInfo extends React.Component {
                     let childrenTH = []
                     //create table heads
                     for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                        for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
-                                childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
-                                    <table style={{ margin: "0" }} className="w-100 h-100">
-                                        <thead>
-                                            <tr>
-                                                <th colSpan="5">Возврат</th>
-                                            </tr>
-                                            <tr>
-                                                <th>{reportColumns[j].name}</th>
-                                                <th>{reportColumns[j + 1].name}</th>
-                                                <th>{reportColumns[j + 2].name}</th>
-                                                <th>{reportColumns[j + 3].name}</th>
-                                                <th>{reportColumns[j + 4].name}</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </td>);
-                                j = j + 4
-                                //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                break;
-                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
-                                childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
-                                    <table style={{ margin: "0" }} className="w-100 h-100">
-                                        <thead>
-                                            <tr>
-                                                <th colSpan="4">Расход</th>
-                                            </tr>
-                                            <tr>
-                                                <th>{reportColumns[j].name}</th>
-                                                <th>{reportColumns[j + 1].name}</th>
-                                                <th>{reportColumns[j + 2].name}</th>
-                                                <th>{reportColumns[j + 3].name}</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </td>);
-                                j = j + 3
-                                //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                break;
-                            } else if ((reportColumns[indexCount].order) == j) {
-                                console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
-                                let as = reportColumns[j].name;
-                                childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                break;
-                            } else {
 
+                        let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === j);
+
+                        if (reportColumnValue.order === CONSTANTS.ReturnColumnOrderOfTsehTermoplast) {
+
+                            var reserveColumnValue = [];
+                            for (let i = 0; i <= 3; i++) {
+                                reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
                             }
+                            childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
+                                <table style={{ margin: "0" }} className="w-100 h-100">
+                                    <thead>
+                                        <tr>
+                                            <th colSpan="5">Возврат</th>
+                                        </tr>
+                                        <tr>
+                                            <th>{reportColumnValue.name}</th>                                            
+                                            <th>{reserveColumnValue[0].name}</th>
+                                            <th>{reserveColumnValue[1].name}</th>
+                                            <th>{reserveColumnValue[2].name}</th>
+                                            <th>{reserveColumnValue[3].name}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>);
+                            j = j + 4
+
+                        } else if (reportColumnValue.order === CONSTANTS.ExpenseColumnOrderOfTsehTermoplast) {
+
+                            var reserveColumnValue = [];
+                            for (let i = 0; i <= 2; i++) {
+                                reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
+                            }
+                            childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
+                                <table style={{ margin: "0" }} className="w-100 h-100">
+                                    <thead>
+                                        <tr>
+                                            <th colSpan="4">Расход</th>
+                                        </tr>
+                                        <tr>
+                                            <th>{reportColumnValue.name}</th>
+                                            <th>{reserveColumnValue[0].name}</th>
+                                            <th>{reserveColumnValue[1].name}</th>
+                                            <th>{reserveColumnValue[2].name}</th>                                           
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>);
+                            j = j + 3
+
+                        } else if (reportColumnValue.order == j) {                            
+                            let as = reportColumnValue.name;
+                            childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+
+                        } else {
+
                         }
                     }
                     this.state.thead = [];
@@ -533,58 +535,61 @@ export class CreateInfo extends React.Component {
                     let childrenTH = []
                     //create table heads
                     for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                        for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                            if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
-                                childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
-                                    <table style={{ margin: "0" }} className="w-100 h-100">
-                                        <thead>
-                                            <tr>
-                                                <th colSpan="5">Возврат</th>
-                                            </tr>
-                                            <tr>
-                                                <th>{reportColumns[j].name}</th>
-                                                <th>{reportColumns[j + 1].name}</th>
-                                                <th>{reportColumns[j + 2].name}</th>
-                                                <th>{reportColumns[j + 3].name}</th>
-                                                <th>{reportColumns[j + 4].name}</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </td>);
-                                j = j + 4
-                                //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                break;
-                            } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
-                                childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
-                                    <table style={{ margin: "0" }} className="w-100 h-100">
-                                        <thead>
-                                            <tr>
-                                                <th colSpan="4">Расход</th>
-                                            </tr>
-                                            <tr>
-                                                <th>{reportColumns[j].name}</th>
-                                                <th>{reportColumns[j + 1].name}</th>
-                                                <th>{reportColumns[j + 2].name}</th>
-                                                <th>{reportColumns[j + 3].name}</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </td>);
-                                j = j + 3
-                                //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                break;
-                            } else if ((reportColumns[indexCount].order) == j) {
-                                console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
-                                let as = reportColumns[j].name;
-                                childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                break;
-                            } else {
+                        let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === j);
 
+                        if (reportColumnValue.order === CONSTANTS.ReturnColumnOrderOfTsehTermoplast) {
+
+                            var reserveColumnValue = [];
+                            for (let i = 0; i <= 3; i++) {
+                                reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
                             }
+                            childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
+                                <table style={{ margin: "0" }} className="w-100 h-100">
+                                    <thead>
+                                        <tr>
+                                            <th colSpan="5">Возврат</th>
+                                        </tr>
+                                        <tr>
+                                            <th>{reportColumnValue.name}</th>
+                                            <th>{reserveColumnValue[0].name}</th>
+                                            <th>{reserveColumnValue[1].name}</th>
+                                            <th>{reserveColumnValue[2].name}</th>
+                                            <th>{reserveColumnValue[3].name}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>);
+                            j = j + 4
+
+                        } else if (reportColumnValue.order === CONSTANTS.ExpenseColumnOrderOfTsehTermoplast) {
+
+                            var reserveColumnValue = [];
+                            for (let i = 0; i <= 2; i++) {
+                                reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
+                            }
+                            childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
+                                <table style={{ margin: "0" }} className="w-100 h-100">
+                                    <thead>
+                                        <tr>
+                                            <th colSpan="4">Расход</th>
+                                        </tr>
+                                        <tr>
+                                            <th>{reportColumnValue.name}</th>
+                                            <th>{reserveColumnValue[0].name}</th>
+                                            <th>{reserveColumnValue[1].name}</th>
+                                            <th>{reserveColumnValue[2].name}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>);
+                            j = j + 3
+
+                        } else if (reportColumnValue.order == j) {
+                            let as = reportColumnValue.name;
+                            childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+
+                        } else {
+
                         }
                     }
                     this.state.thead = [];

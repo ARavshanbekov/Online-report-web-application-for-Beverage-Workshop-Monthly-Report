@@ -22,6 +22,5 @@ namespace Kelechek_otchet_dlya_nachalnikov.Data
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ResponsibleArea> ResponsibleAreas { get; set; }
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.MonthlyBalance> MonthlyBalances { get; set; }        
         public DbSet<Kelechek_otchet_dlya_nachalnikov.Models.ReportStandard> ReportStandards { get; set; }
-
     }
 }

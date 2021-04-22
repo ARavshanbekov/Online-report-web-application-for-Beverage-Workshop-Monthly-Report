@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Kelechek_otchet_dlya_nachalnikov.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Kelechek_otchet_dlya_nachalnikov
 {
@@ -23,16 +24,19 @@ namespace Kelechek_otchet_dlya_nachalnikov
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
-            });
+            });                   
 
             services.AddDbContext<Kelechek_otchet_dlya_nachalnikovContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("Kelechek_otchet_dlya_nachalnikovContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("Kelechek_otchet_dlya_nachalnikovContext")));           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
