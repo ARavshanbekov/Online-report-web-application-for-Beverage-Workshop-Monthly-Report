@@ -12,7 +12,7 @@ import russianMessages from 'ra-language-russian';
 import './components/css/custom.css';
 import Dashboard from './Dashboard';
 import { CONSTANTS } from "./Constants";
-const MyLoginPage = () => <Login backgroundImage="https://source.unsplash.com/random/1600x900/daily" />;
+const MyLoginPage = () => <Login backgroundImage="https://source.unsplash.com/1366x768/?accounting" />;
 
 const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
 

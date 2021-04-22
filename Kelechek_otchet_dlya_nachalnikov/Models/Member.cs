@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Kelechek_otchet_dlya_nachalnikov.Models
@@ -23,8 +25,14 @@ namespace Kelechek_otchet_dlya_nachalnikov.Models
         public string token { get; set; }
         public string memberType { get; set; }
 
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<MonthlyBalance> MonthlyBalances { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Report> Reports { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<ResponsibleArea> ResponsibleAreas { get; set; }
 
     }
