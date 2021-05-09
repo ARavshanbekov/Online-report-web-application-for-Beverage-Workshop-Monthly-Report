@@ -78,7 +78,6 @@ class MyCreateInputField extends React.Component {
             value: event.target.value,
             rowId: this.props.id,
             colId: this.props.columnId,
-            calculationSign: this.props.calculationSign
         }
         this.props.onValueChange(newObj);
     }
@@ -118,10 +117,7 @@ export class CreateInfo extends React.Component {
             amountFromLosses: []
         };
 
-        this.printRef = React.createRef();
-
         this.handleValueChange = this.handleValueChange.bind(this);
-        this.handleResultValueChange = this.handleResultValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDate = this.handleDate.bind(this);
     }
@@ -144,34 +140,38 @@ export class CreateInfo extends React.Component {
             //this.state.balanceCalculationSigns[xCoordinatePosition][2] = reportColumns[2].calculationSign;
             for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
 
-                
+
                 let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === yCoordinatePosition)
-                
+
                 //let reportColumnValue = reportColumns.find(element => element.order === yCoordinatePosition && element.responsibleAreaId === reportStandards[0].responsibleAreaId);                
                 if (reportColumnValue.order === CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {
                     let lossValue = reportStandards.find(element => element.reportItemId === reportItemValue.id).value;
                     childrenTB.push(<td>{lossValue}</td>);
                     //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + yCoordinatePosition);
                     this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.LossValueColumnOrderOfTsehTermoplast] = lossValue;
-                    
+
                 } else if (reportColumnValue.order === CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast) {
-                    console.log("INSIDEtOTALArrival", reportColumnValue);
+                    //console.log("INSIDEtOTALArrival", reportColumnValue);
                     childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                   
+
                 } else if (reportColumnValue.order === CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast) {
 
                     childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                   
+
                 } else if (reportColumnValue.order === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast) {
 
                     childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
-                   
+
                 } else if (reportColumnValue.order === yCoordinatePosition) {
                     childrenTB.push(<td className="px-0 py-auto"><MyCreateInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} onValueChange={this.handleValueChange} /></td>);
-                  
+
                 } else {
 
                 }
+
+                this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
+                this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
+                this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast]).plus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]).minus(this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast])).valueOf();
             }
 
             tbody.push(<tr>{childrenTB}</tr>)
@@ -185,24 +185,12 @@ export class CreateInfo extends React.Component {
         let targetRowId = target.rowId;
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
-        console.table(tempArray);
         tempArray[targetRowId][targetColId] = parseFloat(target.value);
 
         tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
         tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
         tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]).minus(tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast])).valueOf();
 
-        this.setState({
-            balanceOperationNumbers: tempArray
-        })
-
-        console.table(this.state.balanceOperationNumbers);
-    }
-
-    handleResultValueChange(target) {
-        let targetValue = target.value;
-        let tempArray = this.state.balanceOperationNumbers;
-        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
         this.setState({
             balanceOperationNumbers: tempArray
         })
@@ -218,7 +206,7 @@ export class CreateInfo extends React.Component {
         let currentMonth = this.state.currentMonth - 1;
         let reportDate = new Date((new Date).setMonth(currentMonth));
 
-        console.log("this.state.currentMonth", this.state.currentMonth);
+        //console.log("this.state.currentMonth", this.state.currentMonth);
         let userId = localStorage.getItem('id');
         //create table heads        
         //console.log                
@@ -230,7 +218,7 @@ export class CreateInfo extends React.Component {
             memberId: parseInt(userId)
         }
 
-        console.log("reportDate", reportDate)
+        //console.log("reportDate", reportDate)
         axios
             .post(CONSTANTS.PathToReportsController, postReport)
             .then(response => {
@@ -281,7 +269,7 @@ export class CreateInfo extends React.Component {
                 Promise.all([postMonthlyBalanceFunc(), postDataFunc()])
                     .then(function (results) {
                         //let data = JSON.parse(JSON.stringify(results.data));
-                        console.log("results", results);
+                        //console.log("results", results);
                         toast.success(CONSTANTS.MessageUpdatedSuccessfully, {
                             position: "bottom-center",
                             autoClose: 5000,
@@ -352,7 +340,7 @@ export class CreateInfo extends React.Component {
         const searchTerm = '-';
         currentMonth = parseInt(currentMonth.substring(currentMonth.indexOf(searchTerm) + 1));
 
-        console.log("currentMonth", currentMonth);
+        //console.log("currentMonth", currentMonth);
         //console.log(currentMonth);
 
         this.setState({
@@ -408,7 +396,7 @@ export class CreateInfo extends React.Component {
                                             <th colSpan="5">Возврат</th>
                                         </tr>
                                         <tr>
-                                            <th>{reportColumnValue.name}</th>                                            
+                                            <th>{reportColumnValue.name}</th>
                                             <th>{reserveColumnValue[0].name}</th>
                                             <th>{reserveColumnValue[1].name}</th>
                                             <th>{reserveColumnValue[2].name}</th>
@@ -435,14 +423,14 @@ export class CreateInfo extends React.Component {
                                             <th>{reportColumnValue.name}</th>
                                             <th>{reserveColumnValue[0].name}</th>
                                             <th>{reserveColumnValue[1].name}</th>
-                                            <th>{reserveColumnValue[2].name}</th>                                           
+                                            <th>{reserveColumnValue[2].name}</th>
                                         </tr>
                                     </thead>
                                 </table>
                             </td>);
                             j = j + 3
 
-                        } else if (reportColumnValue.order == j) {                            
+                        } else if (reportColumnValue.order == j) {
                             let as = reportColumnValue.name;
                             childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
 
@@ -695,7 +683,8 @@ export class CreateInfo extends React.Component {
                             <StickyTable size="md" headers={this.state.thead} data={this.fillTableBody()} />
                             <Button variant="contained"
                                 color="secondary"
-                                startIcon={<SaveIcon />} onClick={this.handleSubmit}>
+                                startIcon={<SaveIcon />}
+                                onClick={this.handleSubmit}>
                                 {CONSTANTS.MessageSave}
                             </Button>
                             <ToastContainer />
@@ -734,8 +723,7 @@ class MyEditInputField extends React.Component {
         let newObj = {
             value: event.target.value,
             rowId: this.props.id,
-            colId: this.props.columnId,
-            calculationSign: this.props.calculationSign
+            colId: this.props.columnId
         }
         this.props.onValueChange(newObj);
     }
@@ -769,11 +757,11 @@ export class EditInfo extends React.PureComponent {
         };
 
         this.handleValueChange = this.handleValueChange.bind(this);
-        this.handleResultValueChange = this.handleResultValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     fillTableBody() {
+        console.log("inside fillTableBody");
         let tbody = [];
         let report = this.state.report;
         let reportColumns = this.state.reportColumns;
@@ -783,6 +771,7 @@ export class EditInfo extends React.PureComponent {
         let reportStandards = this.state.reportStandards;
 
         if (!this.state.isBodyFilled) {
+            console.log("entered to filltableBody edit butt not editable")
             for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
                 let childrenTB = []
 
@@ -800,9 +789,9 @@ export class EditInfo extends React.PureComponent {
                 for (let yCoordinatePosition = 2; yCoordinatePosition < Object.keys(reportColumns).length; yCoordinatePosition++) {
 
                     let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === yCoordinatePosition)
-                    console.log("reportColumnValue", reportColumnValue);
+                    //console.log("reportColumnValue", reportColumnValue);
                     let reportDataValue = reportDatas.filter(element => element.reportItemId === reportItemValue.id).find(element => element.reportColumnId === reportColumnValue.id);
-                    console.log("reportDataValue", reportDataValue);
+                    //console.log("reportDataValue", reportDataValue);
                     if (reportColumnValue.order == CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast) {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast] = reportDataValue.data;
@@ -875,14 +864,14 @@ export class EditInfo extends React.PureComponent {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast] = monthlyBalanceValue.residualBalance;
 
-                        childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
+                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} /></td>);
                     } else if (reportColumnValue.order == yCoordinatePosition) {
 
                         this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = reportDataValue.data;
-                        childrenTB.push(<td>{this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]}</td>);
+                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} /></td>);
 
                     } else {
-                        console.log("Faillll")
+                      //console.log("Faillll")
                     }
                 }
 
@@ -890,10 +879,11 @@ export class EditInfo extends React.PureComponent {
             }
 
 
+            //this.state.isBodyFilled = true;
             this.state.isBodyFilled = true;
         } else {
 
-            console.log("fillTableBody ");
+            console.log("Entered to fillTableBody edit");
 
             for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
                 let childrenTB = []
@@ -912,7 +902,7 @@ export class EditInfo extends React.PureComponent {
                     if (reportColumnValue.order == CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
                     } else if (reportColumnValue.order === CONSTANTS.LossValueColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.LossValueColumnOrderOfTsehTermoplast) {
@@ -923,45 +913,45 @@ export class EditInfo extends React.PureComponent {
                         childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.LossValueColumnOrderOfTsehTermoplast]} onResultValueChange={this.handleResultValueChange} /></td>);
                         //console.log("order: " + (reportColumns[indexCount].order - 1) + "==" + yCoordinatePosition);
 
-                    } else if (reportColumnValue.order == CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast) {
 
                         childrenTB.push(<td className="px-0 py-auto"><MyEditInputField id={xCoordinatePosition} rowId={xCoordinatePosition} columnId={yCoordinatePosition} initialValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast]} onValueChange={this.handleValueChange} /></td>);
-                    } else if (reportColumnValue.order == CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast && yCoordinatePosition == CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast) {
+                    } else if (reportColumnValue.order === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast && yCoordinatePosition === CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast) {
 
-                        childrenTB.push(<td>{this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]}</td>);
-                    } else if (reportColumnValue.order == yCoordinatePosition) {
+                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast]} /></td>);
+                    } else if (reportColumnValue.order === yCoordinatePosition) {
 
-                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} onResultValueChange={this.handleResultValueChange} /></td>);
+                        childrenTB.push(<td><ResultInputField key={_uniqueId()} resultValue={this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]} /></td>);
 
                     } else {
-                        console.log("Faillll")
+                        //console.log("Faillll")
                     }
                 }
 
@@ -977,42 +967,30 @@ export class EditInfo extends React.PureComponent {
         let targetRowId = target.rowId;
         let targetColId = target.colId;
         let tempArray = this.state.balanceOperationNumbers;
-        console.table(tempArray);
         tempArray[targetRowId][targetColId] = parseFloat(target.value);
 
-        tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast] = tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast];
-        tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast] = tempArray[targetRowId][CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast];
-        tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast] = tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast] + tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast] - tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast];
+        tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ArrivalFromTheWarehouseColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTsehFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTsehSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromWarehouseSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReturnFromTermoplastIVyduvColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ReceiveWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
+        tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.ExpenseVyduvColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseTsehFirstColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseTsehSecondColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseCrushedColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.ExpenseWithInvoiceColumnOrderOfTsehTermoplast])).valueOf();
+        tempArray[targetRowId][CONSTANTS.ResidualBalanceColumnOrderOfTsehTermoplast] = (new DecimalJS.Decimal(tempArray[targetRowId][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast]).plus(tempArray[targetRowId][CONSTANTS.TotalArrivalColumnOrderOfTsehTermoplast]).minus(tempArray[targetRowId][CONSTANTS.TotalExpenceColumnOrderOfTsehTermoplast])).valueOf();
 
         this.setState({
             balanceOperationNumbers: tempArray
         })
 
-        console.table(this.state.balanceOperationNumbers);
-    }
-
-    handleResultValueChange(target) {
-        let targetValue = target.value;
-        let tempArray = this.state.balanceOperationNumbers;
-        tempArray[target.colId][this.state.balanceAtTheEndIndex] = parseInt(targetValue);
-        this.setState({
-            balanceOperationNumbers: tempArray
-        })
+        this.forceUpdate();        
     }
 
     handleSubmit(event) {
         event.preventDefault();
         let tempArray = this.state.balanceOperationNumbers;
-        console.table(tempArray);
+        
         let report = this.state.report;
         let reportColumns = this.state.reportColumns;
         let reportItems = this.state.reportItems;
         let monthlyBalances = this.state.monthlyBalances;
         let reportDatas = this.state.reportDatas;
         let postData = [];
-        let postMonthlyBalance = [];
-
-        console.log("fillTableBody");
+        let postMonthlyBalance = [];        
 
         for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
 
@@ -1056,7 +1034,7 @@ export class EditInfo extends React.PureComponent {
                                             reportColumnId: reportDatas[reportDataXIndex].reportColumnId
                                         }
                                         postData.push(reportDataObject);
-                                        console.log(this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]);
+                                        //console.log(this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]);
                                         //console.log(reportDataObject);
                                         break;
                                     }
@@ -1150,62 +1128,65 @@ export class EditInfo extends React.PureComponent {
                         let childrenTH = []
                         //create table heads
                         for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                            for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                                if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
-                                    childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="5">Возврат</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                    <th>{reportColumns[j + 2].name}</th>
-                                                    <th>{reportColumns[j + 3].name}</th>
-                                                    <th>{reportColumns[j + 4].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
-                                    j = j + 4
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
-                                    childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="4">Расход</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                    <th>{reportColumns[j + 2].name}</th>
-                                                    <th>{reportColumns[j + 3].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
-                                    j = j + 3
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == j) {
-                                    console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
-                                    let as = reportColumns[j].name;
-                                    childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                    break;
-                                } else {
+                            let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === j);
 
+                            if (reportColumnValue.order === CONSTANTS.ReturnColumnOrderOfTsehTermoplast) {
+
+                                var reserveColumnValue = [];
+                                for (let i = 0; i <= 3; i++) {
+                                    reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
                                 }
+                                childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
+                                    <table style={{ margin: "0" }} className="w-100 h-100">
+                                        <thead>
+                                            <tr>
+                                                <th colSpan="5">Возврат</th>
+                                            </tr>
+                                            <tr>
+                                                <th>{reportColumnValue.name}</th>
+                                                <th>{reserveColumnValue[0].name}</th>
+                                                <th>{reserveColumnValue[1].name}</th>
+                                                <th>{reserveColumnValue[2].name}</th>
+                                                <th>{reserveColumnValue[3].name}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </td>);
+                                j = j + 4
+
+                            } else if (reportColumnValue.order === CONSTANTS.ExpenseColumnOrderOfTsehTermoplast) {
+
+                                var reserveColumnValue = [];
+                                for (let i = 0; i <= 2; i++) {
+                                    reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
+                                }
+                                childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
+                                    <table style={{ margin: "0" }} className="w-100 h-100">
+                                        <thead>
+                                            <tr>
+                                                <th colSpan="4">Расход</th>
+                                            </tr>
+                                            <tr>
+                                                <th>{reportColumnValue.name}</th>
+                                                <th>{reserveColumnValue[0].name}</th>
+                                                <th>{reserveColumnValue[1].name}</th>
+                                                <th>{reserveColumnValue[2].name}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </td>);
+                                j = j + 3
+
+                            } else if (reportColumnValue.order == j) {
+                                let as = reportColumnValue.name;
+                                childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+
+                            } else {
+
                             }
                         }
                         this.state.thead = [];
-                        this.state.thead.push(<tr>{childrenTH}</tr>);
+                        this.state.thead.push(<tr key={_uniqueId()}>{childrenTH}</tr>);
 
                         let totalColumnNumber = Object.keys(reportColumns).length;
                         for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
@@ -1220,9 +1201,9 @@ export class EditInfo extends React.PureComponent {
                             }
                         }
 
-                        console.log("report.date", report.date)
+                        //console.log("report.date", report.date)
                         let reportMonth = new Date(report.date).getMonth() + 1;
-                        console.log("reportMonth", reportMonth)
+                        //console.log("reportMonth", reportMonth)
                         let isApiReturnedData = true;
                         this.setState({
                             isApiReturnedData: isApiReturnedData,
@@ -1340,18 +1321,15 @@ export class ShowInfo extends React.Component {
         let reportItems = this.state.reportItems;
         let monthlyBalances = this.state.monthlyBalances;
         let reportDatas = this.state.reportDatas;
-        console.log(reportItems);
-        console.log("fillTableBody show first");
-        console.log("report", report);
-        console.log("reportDatas", reportDatas);
+  
         for (let xCoordinatePosition = 0; xCoordinatePosition < Object.keys(reportItems).length; xCoordinatePosition++) {
             let childrenTB = []
 
             let reportItemValue = reportItems.filter(element => element.order === xCoordinatePosition).find(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId);
-            console.log("reportItemValue", reportItemValue);
+            //console.log("reportItemValue", reportItemValue);
 
             let monthlyBalanceValue = monthlyBalances.filter(element => element.memberId === monthlyBalances[0].memberId && element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === xCoordinatePosition);
-            console.log("monthlyBalanceValue", monthlyBalanceValue);
+            //console.log("monthlyBalanceValue", monthlyBalanceValue);
             childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{reportItemValue.name}</td>);
             childrenTB.push(<td key={_uniqueId()} id={xCoordinatePosition}>{monthlyBalanceValue.initialBalance}</td>);
             this.state.balanceOperationNumbers[xCoordinatePosition][CONSTANTS.BalanceAtTheBeginningColumnOrderOfTsehTermoplast] = monthlyBalanceValue.initialBalance;
@@ -1361,12 +1339,9 @@ export class ShowInfo extends React.Component {
                 let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === yCoordinatePosition)
                 //console.log("reportColumnValue", reportColumnValue);
                 let reportDataValue = reportDatas.filter(element => element.reportId === monthlyBalances[0].reportId && element.reportItemId === reportItemValue.id).find(element => element.reportColumnId === reportColumnValue.id);
-                //console.log("reportItemValue.id", reportItemValue.id);
-                //console.log("reportColumnValue.id", reportColumnValue.id)
-                //console.log("reportDataValue", reportDataValue);
-                //console.log("reportDatas.filter(element => element.reportItemId === reportItemValue.id)", reportDatas.filter(element => element.reportId === monthlyBalances[0].reportId && element.reportItemId === reportItemValue.id));
+
                 if (reportDataValue !== null && reportDataValue !== undefined) {
-                    console.log("reportDataValue", reportDataValue);
+                    //console.log("reportDataValue", reportDataValue);
                     this.state.balanceCalculationSigns[xCoordinatePosition][yCoordinatePosition] = reportColumns[yCoordinatePosition].calculationSign;
                     this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition] = reportDataValue.data;
                     childrenTB.push(<td>{this.state.balanceOperationNumbers[xCoordinatePosition][yCoordinatePosition]}</td>);
@@ -1392,7 +1367,7 @@ export class ShowInfo extends React.Component {
         let report = this.state.report;
         let reportDate = new Date((new Date).setMonth(currentMonth));
 
-        console.log("this.state.currentMonth", this.state.currentMonth);
+        //console.log("this.state.currentMonth", this.state.currentMonth);
         let userId = localStorage.getItem('id');
         //create table heads        
         //console.log                
@@ -1400,7 +1375,7 @@ export class ShowInfo extends React.Component {
         let postReport = report;
         postReport.status = this.state.reportStatus;
 
-        console.log("postReport", postReport)
+        //console.log("postReport", postReport)
         axios
             .put(CONSTANTS.PathToReportsController + JSON.stringify(postReport.id), postReport)
             .then(function (results) {
@@ -1467,7 +1442,7 @@ export class ShowInfo extends React.Component {
             .then(response => {
                 if (!this.state.isApiReturnedData) {
                     let data = JSON.parse(JSON.stringify(response.data));
-                    console.log("data received: " + data);
+                    //console.log("data received: " + data);
 
                     if (data.monthlyBalances.length > 0) {
                         this.setState({
@@ -1488,58 +1463,61 @@ export class ShowInfo extends React.Component {
                         let childrenTH = []
                         //create table heads
                         for (let j = 0; j < Object.keys(reportColumns).length; j++) {
-                            for (let indexCount = 0; indexCount < Object.keys(reportColumns).length; indexCount++) {
-                                if ((reportColumns[indexCount].order) == CONSTANTS.ReturnColumnOrderOfTsehTermoplast && CONSTANTS.ReturnColumnOrderOfTsehTermoplast == j) {
-                                    childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="5">Возврат</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                    <th>{reportColumns[j + 2].name}</th>
-                                                    <th>{reportColumns[j + 3].name}</th>
-                                                    <th>{reportColumns[j + 4].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
-                                    j = j + 4
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == CONSTANTS.ExpenseColumnOrderOfTsehTermoplast && CONSTANTS.ExpenseColumnOrderOfTsehTermoplast == j) {
-                                    childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
-                                        <table style={{ margin: "0" }} className="w-100 h-100">
-                                            <thead>
-                                                <tr>
-                                                    <th colSpan="4">Расход</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>{reportColumns[j].name}</th>
-                                                    <th>{reportColumns[j + 1].name}</th>
-                                                    <th>{reportColumns[j + 2].name}</th>
-                                                    <th>{reportColumns[j + 3].name}</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </td>);
-                                    j = j + 3
-                                    //childrenTH.push(<th colspan="2" key={_uniqueId()} id={_uniqueId()}>{reportColumns[j].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 1].name}</th>);
-                                    //childrenTH.push(<th key={_uniqueId()} id={_uniqueId()}>{reportColumns[j + 2].name}</th>);
-                                    break;
-                                } else if ((reportColumns[indexCount].order) == j) {
-                                    console.log("order: " + (reportColumns[indexCount].order) + "==" + j);
-                                    let as = reportColumns[j].name;
-                                    childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
-                                    break;
-                                } else {
+                            let reportColumnValue = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === j);
 
+                            if (reportColumnValue.order === CONSTANTS.ReturnColumnOrderOfTsehTermoplast) {
+
+                                var reserveColumnValue = [];
+                                for (let i = 0; i <= 3; i++) {
+                                    reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
                                 }
+                                childrenTH.push(<td colSpan="5" style={{ padding: "0" }} className="h-100">
+                                    <table style={{ margin: "0" }} className="w-100 h-100">
+                                        <thead>
+                                            <tr>
+                                                <th colSpan="5">Возврат</th>
+                                            </tr>
+                                            <tr>
+                                                <th>{reportColumnValue.name}</th>
+                                                <th>{reserveColumnValue[0].name}</th>
+                                                <th>{reserveColumnValue[1].name}</th>
+                                                <th>{reserveColumnValue[2].name}</th>
+                                                <th>{reserveColumnValue[3].name}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </td>);
+                                j = j + 4
+
+                            } else if (reportColumnValue.order === CONSTANTS.ExpenseColumnOrderOfTsehTermoplast) {
+
+                                var reserveColumnValue = [];
+                                for (let i = 0; i <= 2; i++) {
+                                    reserveColumnValue[i] = reportColumns.filter(element => element.responsibleAreaId === monthlyBalances[0].responsibleAreaId).find(element => element.order === (j + i + 1));
+                                }
+                                childrenTH.push(<td colSpan="4" style={{ padding: "0" }} className="h-100">
+                                    <table style={{ margin: "0" }} className="w-100 h-100">
+                                        <thead>
+                                            <tr>
+                                                <th colSpan="4">Расход</th>
+                                            </tr>
+                                            <tr>
+                                                <th>{reportColumnValue.name}</th>
+                                                <th>{reserveColumnValue[0].name}</th>
+                                                <th>{reserveColumnValue[1].name}</th>
+                                                <th>{reserveColumnValue[2].name}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </td>);
+                                j = j + 3
+
+                            } else if (reportColumnValue.order == j) {
+                                let as = reportColumnValue.name;
+                                childrenTH.push(<th rowSpan="2" key={_uniqueId()} id={_uniqueId()}>{as}</th>);
+
+                            } else {
+
                             }
                         }
                         this.state.thead = [];
@@ -1558,9 +1536,9 @@ export class ShowInfo extends React.Component {
                             }
                         }
 
-                        console.log("report.date", report.date)
+                        //console.log("report.date", report.date)
                         let reportMonth = new Date(report.date).getMonth() + 1;
-                        console.log("reportMonth", reportMonth)
+                        //console.log("reportMonth", reportMonth)
                         let isApiReturnedData = true;
                         this.setState({
                             isApiReturnedData: isApiReturnedData,

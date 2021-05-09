@@ -147,6 +147,11 @@ namespace Kelechek_otchet_dlya_nachalnikov.Controllers
                 return NotFound();
             }
 
+            if (month == 1)
+            {
+                month = 13;
+            }
+
             var monthlyBalances = await _context.MonthlyBalances.Where(r => r.date.Month == (month - 1) && r.memberId == memberID && r.responsibleAreaId == responsibleArea.id).ToListAsync();
             //  
             if (monthlyBalances == null || !monthlyBalances.Any())

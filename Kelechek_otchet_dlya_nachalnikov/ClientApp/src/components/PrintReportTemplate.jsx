@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { Table, Row, Col, Container } from 'react-bootstrap';
 import './../components/css/custom.css';
 
 class PrintReportTemplate extends React.Component {
@@ -19,24 +19,24 @@ class PrintReportTemplate extends React.Component {
                     <Col>
                     </Col>
                     <Col>
-                        <h3>"Утверждаю"</h3>
-                        <h3>Директор ЗАО "Келечек"</h3>
-                        <h3>ф-л "Бурулсун-ПЭТ"</h3>
-                        <h3>госп.__________Туманов Н.К.</h3>
+                        <h5>"Утверждаю"</h5>
+                        <h5>Директор ЗАО "Келечек"</h5>
+                        <h5>ф-л "Бурулсун-ПЭТ"</h5>
+                        <h5>госп.__________Туманов Н.К.</h5>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
                     </Col>
                     <Col>
-                        <h1>Отчет на {months[this.props.reportMonth - 1]} месяц</h1>
+                        <h5>Отчет на {months[this.props.reportMonth - 1]} месяц</h5>
                     </Col>
                     <Col>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <h3>{this.props.responsibleAreaName}</h3>
+                        <h6>{this.props.responsibleAreaName}</h6>
                     </Col>
                     <Col>
                     </Col>
@@ -44,7 +44,7 @@ class PrintReportTemplate extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Table striped bordered hover size="md">
+                    <Table>
                         <thead>
                             {this.props.headers}
                         </thead>
@@ -57,36 +57,36 @@ class PrintReportTemplate extends React.Component {
                     <Col>     
                         <Row>
                             <Col>
-                                <h3>Гл. бухгалтер</h3>
+                                <h6>Гл. бухгалтер</h6>
                             </Col>
                             <Col>
-                                <h3>Осмонова Д.</h3>
+                                <h6>Осмонова Д.</h6>
                             </Col>  
                         </Row>
                         <Row>
                             <Col>
-                                <h3>Зав. склад</h3>
+                                <h6>Зав. склад</h6>
                             </Col>
                             <Col>
-                                <h3>Абдыкайыров Ш.</h3>
+                                <h6>Абдыкайыров Ш.</h6>
                             </Col>  
                         </Row>
                     </Col>
                     <Col>
                         <Row>
                             <Col>
-                                <h3>Нач. цех №1</h3>
+                                <h6>Нач. цех №1</h6>
                             </Col>
                             <Col>
-                                <h3>Абдилбекова Г.</h3>
+                                <h6>Абдилбекова Г.</h6>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <h3>Нач. цех №2</h3>
+                                <h6>Нач. цех №2</h6>
                             </Col>
                             <Col>
-                                <h3>Казакбаев Ч.</h3>
+                                <h6>Казакбаев Ч.</h6>
                             </Col>
                         </Row>
                     </Col>                   
