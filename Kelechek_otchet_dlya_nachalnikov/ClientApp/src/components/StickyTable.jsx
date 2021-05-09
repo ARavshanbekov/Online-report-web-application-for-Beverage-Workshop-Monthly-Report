@@ -1,18 +1,20 @@
 ﻿import React from "react";
 import useStickyHeader from "./useStickyHeader.jsx";
-import { Table, Row, Col, Container, Form, Button } from 'react-bootstrap';
+import { Table} from 'react-bootstrap';
 import './../components/css/custom.css';
 
-export default function StickyTable({ headers = [], data = [] }) {
+export default function StickyTable(props) {
     const { tableRef, isSticky } = useStickyHeader();
 
     const ref = React.useRef(null);
 
     const renderHeader = () => (
         <thead>
-            {headers}
+            {props.headers}
         </thead>
     );           
+
+    console.log("inside StickyTable");
 
     return (
         <div ref={ref}>            
@@ -37,7 +39,7 @@ export default function StickyTable({ headers = [], data = [] }) {
             <Table striped bordered hover size="md" ref={tableRef}>
                 {renderHeader()}
                 <tbody>
-                    {data}
+                    {props.data}
                 </tbody>
             </Table>            
         </div>

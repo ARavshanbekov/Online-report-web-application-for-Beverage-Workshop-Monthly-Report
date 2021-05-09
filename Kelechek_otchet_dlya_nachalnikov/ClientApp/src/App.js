@@ -10,9 +10,9 @@ import authProvider from './components/authProvider';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 import russianMessages from 'ra-language-russian';
 import './components/css/custom.css';
-import Dashboard from './Dashboard';
+import Dashboard from './pages/Dashboard';
 import { CONSTANTS } from "./Constants";
-const MyLoginPage = () => <Login backgroundImage="https://source.unsplash.com/1366x768/?accounting" />;
+const MyLoginPage = () => <Login backgroundImage="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=768&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjE5NDMwNDEy&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1366" />;
 
 const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
 
